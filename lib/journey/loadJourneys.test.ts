@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadJourneys, validateJourney } from "./loadJourneys";
+import { resolveJourney } from "./resolver";
 import type { Journey, Step } from "./types";
 
 function step(id: string, overrides: Partial<Step> = {}): Step {
@@ -141,6 +142,37 @@ describe("loadJourneys", () => {
       dependsOn: ["baby-aadhaar"],
       conditions: [{ questionId: "gender", equals: "girl" }],
     });
+  });
+
+  it("ignores the hidden registration track on the after-one-year path", () => {
+    const birth = loadJourneys().find(({ id }) => id === "birth");
+    if (!birth) throw new Error("Birth journey was not loaded.");
+
+    const incompleteResults = resolveJourney(
+      birth,
+      { "birth-timing": "after-one-year" },
+      new Set(),
+    );
+    const incompleteStates = Object.fromEntries(
+      incompleteResults.map((result) => [result.step.id, result.state]),
+    );
+
+    expect(incompleteStates["late-register-birth"]).toBe("UNLOCKED");
+    expect(incompleteStates["register-birth"]).toBe("HIDDEN");
+    expect(incompleteStates["get-certificate-copy"]).toBe("LOCKED");
+
+    const completedResults = resolveJourney(
+      birth,
+      { "birth-timing": "after-one-year" },
+      new Set(["late-register-birth"]),
+    );
+    const completedStates = Object.fromEntries(
+      completedResults.map((result) => [result.step.id, result.state]),
+    );
+
+    expect(completedStates["late-register-birth"]).toBe("DONE");
+    expect(completedStates["register-birth"]).toBe("HIDDEN");
+    expect(completedStates["get-certificate-copy"]).toBe("UNLOCKED");
   });
 
   it("routes bank settlement by nominee status", () => {
