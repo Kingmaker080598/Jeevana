@@ -65,7 +65,7 @@ interface Condition {
 
 ## Resolver behavior
 
-The resolver returns one result for every journey step in source order:
+The resolver returns one result for every journey step in source order. Every result also includes `isConditional: boolean`, which is `true` when the source step has a non-empty `conditions` array; this lets presentation code badge personalized steps without duplicating condition logic.
 
 - `HIDDEN`: at least one condition does not match. Stored completion does not affect this computed visibility.
 - `DONE`: the step is visible and its ID is present in `completedStepIds`.
@@ -76,7 +76,7 @@ Visibility is resolved for all steps before dependency state. A hidden dependenc
 
 ## Validation and loading
 
-`loadJourneys()` statically imports `data/journeys/birth.json`, `data/journeys/death.json`, and `data/journeys/turning18.json`, then validates each journey before returning it. Each placeholder is a valid empty journey object with the respective ID (`birth`, `death`, or `turning18`), bilingual placeholder names, and empty `intakeQuestions` and `steps` arrays. `validateJourney()` throws descriptive errors for:
+`loadJourneys()` uses explicit static imports for `data/journeys/birth.json`, `data/journeys/death.json`, and `data/journeys/turning18.json`; filesystem discovery is intentionally out of scope. It validates each journey before returning it. Each placeholder is a valid empty journey object with the respective ID (`birth`, `death`, or `turning18`), bilingual placeholder names, and empty `intakeQuestions` and `steps` arrays. `validateJourney()` throws descriptive errors for:
 
 - duplicate step IDs;
 - `dependsOn` entries that reference unknown step IDs;
