@@ -16,7 +16,46 @@ This is preferable to class-based journey models or a runtime schema framework b
 
 ## Domain model
 
-`Journey` contains identifiers, English and Telugu names, intake questions, and ordered steps. A `Question` contains bilingual prompts and bilingual options. A `Step` contains bilingual labels and explanation, service metadata, document requirements, dependency IDs, optional conditions, and optional letter/deadline metadata.
+The JSON contract is represented exactly by these TypeScript shapes:
+
+```ts
+interface Journey {
+  id: string;
+  name: string;
+  name_te: string;
+  intakeQuestions: Question[];
+  steps: Step[];
+}
+
+interface Question {
+  id: string;
+  prompt: string;
+  prompt_te: string;
+  options: Array<{ id: string; label: string; label_te: string }>;
+}
+
+interface Step {
+  id: string;
+  name: string;
+  name_te: string;
+  authority: string;
+  portal: string;
+  fee: string;
+  sla: string;
+  whyPlain: string;
+  whyPlain_te: string;
+  documents: string[];
+  dependsOn: string[];
+  conditions?: Condition[];
+  letterTemplateId?: string;
+  deadline?: string;
+}
+
+interface Condition {
+  questionId: string;
+  equals: string;
+}
+```
 
 `Condition` has `questionId` and `equals`. A step with no conditions is visible. A step with conditions is visible only when every condition matches its intake answer. Missing answers do not match, so conditioned steps remain hidden until sufficient intake data exists.
 
@@ -33,7 +72,7 @@ Visibility is resolved for all steps before dependency state. A hidden dependenc
 
 ## Validation and loading
 
-`loadJourneys()` statically imports the placeholder JSON files and validates each journey before returning it. `validateJourney()` throws descriptive errors for:
+`loadJourneys()` statically imports `data/journeys/birth.json`, `data/journeys/death.json`, and `data/journeys/turning18.json`, then validates each journey before returning it. Each placeholder is a valid empty journey object with the respective ID (`birth`, `death`, or `turning18`), bilingual placeholder names, and empty `intakeQuestions` and `steps` arrays. `validateJourney()` throws descriptive errors for:
 
 - duplicate step IDs;
 - `dependsOn` entries that reference unknown step IDs;
@@ -45,7 +84,7 @@ Validation happens while the server-rendered debug page is built, so invalid jou
 
 ## Client state and persistence
 
-A client-side React context owns intake answers and completed step IDs per journey. It initializes safely for server rendering, hydrates from one versioned localStorage payload after mount, and writes subsequent changes back. Actions update answers, toggle step completion, and reset prototype state.
+A client-side React context owns intake answers and completed step IDs per journey. It initializes safely for server rendering, hydrates from localStorage key `jeevana:journey-state:v1` after mount, and writes subsequent changes back. The payload is `{ journeys: Record<string, { answers: Record<string, string>; completedStepIds: string[] }> }`. Malformed or unavailable storage falls back to empty state. Actions update answers, toggle step completion, and reset prototype state.
 
 Completion storage is independent of resolver visibility. No action removes completed IDs when answers change.
 
