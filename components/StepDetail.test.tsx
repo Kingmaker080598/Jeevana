@@ -26,6 +26,8 @@ describe("StepDetail", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
+        version: 1,
+        selectedJourneyId: "death",
         journeys: {
           death: {
             answers: { "nominee-registered": "yes" },

@@ -48,6 +48,8 @@ describe("JourneyFlow", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
+        version: 1,
+        selectedJourneyId: "birth",
         journeys: {
           birth: {
             answers: { "birth-timing": "after-one-year", gender: "boy" },

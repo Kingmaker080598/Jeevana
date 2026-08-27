@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
 import type { Journey, Step } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
@@ -11,7 +11,7 @@ import { useLanguage } from "./LanguageProvider";
 export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step: Step }>) {
   const router = useRouter();
   const { language } = useLanguage();
-  const { state, isHydrated, toggleCompleted } = useJourneyState();
+  const { state, isHydrated, selectJourney, toggleCompleted } = useJourneyState();
   const isTelugu = language === "te";
   const progress = state.journeys[journey.id] ?? { answers: {}, completedStepIds: [] };
   const resolved = useMemo(
@@ -21,6 +21,10 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
       ),
     [journey, progress.answers, progress.completedStepIds, step.id],
   );
+
+  useEffect(() => {
+    selectJourney(journey.id);
+  }, [journey.id, selectJourney]);
 
   if (!isHydrated || !resolved) {
     return (

@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { JourneyStateProvider } from "./JourneyStateProvider";
+import { useJourneyState } from "./JourneyStateProvider";
 import { LanguageProvider, useLanguage } from "./LanguageProvider";
 
 function SharedHeader() {
+  const router = useRouter();
   const { language, toggleLanguage } = useLanguage();
+  const { reset } = useJourneyState();
 
   return (
     <header className="border-b border-[var(--line)] bg-[var(--paper)]">
@@ -25,6 +29,16 @@ function SharedHeader() {
             aria-label={language === "en" ? "Switch to Telugu" : "Switch to English"}
           >
             EN <span className="text-[var(--marigold-dark)]">/</span> తె
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              reset();
+              router.push("/");
+            }}
+            className="min-h-10 border border-[var(--line)] bg-transparent px-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--muted)] transition-colors hover:border-[var(--ink)] hover:text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2"
+          >
+            Start over
           </button>
         </div>
         <span className="w-full border border-[var(--marigold)] bg-[var(--marigold-soft)] px-2 py-1 text-center font-mono text-[9px] font-bold uppercase tracking-wider text-[var(--ink)] sm:hidden">

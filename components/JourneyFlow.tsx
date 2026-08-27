@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
 import type { Journey, ResolvedStep, StepState } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
@@ -26,7 +26,7 @@ function isVisibleStep(
 
 export function JourneyFlow({ journey }: Readonly<{ journey: Journey }>) {
   const { language } = useLanguage();
-  const { state, isHydrated, setAnswer } = useJourneyState();
+  const { state, isHydrated, selectJourney, setAnswer } = useJourneyState();
   const [isEditing, setIsEditing] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const isTelugu = language === "te";
@@ -44,6 +44,10 @@ export function JourneyFlow({ journey }: Readonly<{ journey: Journey }>) {
     () => new Map(journey.steps.map((step) => [step.id, isTelugu ? step.name_te : step.name])),
     [isTelugu, journey.steps],
   );
+
+  useEffect(() => {
+    selectJourney(journey.id);
+  }, [journey.id, selectJourney]);
 
   if (!isHydrated) {
     return (

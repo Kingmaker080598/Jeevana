@@ -8,6 +8,7 @@ import {
 } from "./journeyState";
 
 const state: JourneyState = {
+  selectedJourneyId: "birth",
   journeys: {
     birth: {
       answers: { gender: "girl" },
@@ -19,6 +20,7 @@ const state: JourneyState = {
 describe("journey state", () => {
   it("does not remove completion when an answer changes", () => {
     const initial: JourneyState = {
+      selectedJourneyId: "birth",
       journeys: {
         birth: {
           answers: { gender: "girl" },
@@ -43,6 +45,10 @@ describe("journey state", () => {
 
   it("round-trips the persisted payload", () => {
     expect(parseJourneyState(serializeJourneyState(state))).toEqual(state);
+    expect(JSON.parse(serializeJourneyState(state))).toMatchObject({
+      version: 1,
+      selectedJourneyId: "birth",
+    });
   });
 
   it("falls back to empty state for absent or malformed storage", () => {
@@ -57,6 +63,14 @@ describe("journey state", () => {
     expect(
       parseJourneyState(
         '{"journeys":{"birth":{"answers":{"gender":1},"completedStepIds":[]}}}',
+      ),
+    ).toEqual(EMPTY_JOURNEY_STATE);
+  });
+
+  it("rejects a version-mismatched payload", () => {
+    expect(
+      parseJourneyState(
+        '{"version":2,"selectedJourneyId":"birth","journeys":{}}',
       ),
     ).toEqual(EMPTY_JOURNEY_STATE);
   });
