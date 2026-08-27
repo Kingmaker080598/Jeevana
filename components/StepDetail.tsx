@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
 import type { Journey, Step } from "@/lib/journey/types";
@@ -9,7 +7,6 @@ import { useJourneyState } from "./JourneyStateProvider";
 import { useLanguage } from "./LanguageProvider";
 
 export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step: Step }>) {
-  const router = useRouter();
   const { language } = useLanguage();
   const { state, isHydrated, selectJourney, toggleCompleted } = useJourneyState();
   const isTelugu = language === "te";
@@ -28,9 +25,9 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
 
   if (!isHydrated || !resolved) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-16 text-center text-[var(--muted)]">
+      <div className="py-16 text-center text-[var(--muted)]">
         {isTelugu ? "దశ వివరాలు సిద్ధం చేస్తున్నాం…" : "Preparing step details…"}
-      </main>
+      </div>
     );
   }
 
@@ -41,15 +38,8 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
     .map((candidate) => (isTelugu ? candidate.name_te : candidate.name));
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-      <Link
-        href={`/journey/${journey.id}`}
-        className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--leaf)]"
-      >
-        ← {isTelugu ? "రోడ్‌మ్యాప్‌కు తిరిగి" : "Back to roadmap"}
-      </Link>
-
-      <article className="mt-7 border border-[var(--line)] bg-white">
+    <div>
+      <article className="border border-[var(--line)] bg-white">
         <header className="border-b-4 border-[var(--marigold)] p-5 sm:p-8">
           <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[var(--marigold-dark)]">
             {isTelugu ? journey.name_te : journey.name} · {resolved.state}
@@ -134,7 +124,6 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
           type="button"
           onClick={() => {
             toggleCompleted(journey.id, step.id);
-            router.push(`/journey/${journey.id}`);
           }}
           className="mt-6 min-h-14 w-full bg-[var(--ink)] px-6 text-base font-bold text-white transition-colors hover:bg-[var(--leaf)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2 sm:w-auto"
         >
@@ -147,6 +136,6 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
               : "Mark done"}
         </button>
       ) : null}
-    </main>
+    </div>
   );
 }
