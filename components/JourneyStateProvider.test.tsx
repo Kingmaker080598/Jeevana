@@ -28,7 +28,7 @@ afterEach(() => {
 
 describe("JourneyStateProvider", () => {
   it("falls back safely when reading storage throws", async () => {
-    vi.spyOn(window.localStorage, "getItem").mockImplementation(() => {
+    const getItem = vi.spyOn(window.localStorage, "getItem").mockImplementation(() => {
       throw new DOMException("Storage blocked");
     });
 
@@ -39,10 +39,11 @@ describe("JourneyStateProvider", () => {
     );
 
     await waitFor(() => expect(screen.getByTestId("completed")).toHaveTextContent("empty"));
+    expect(getItem).toHaveBeenCalledWith(STORAGE_KEY);
   });
 
   it("keeps state usable when writing storage throws", async () => {
-    vi.spyOn(window.localStorage, "setItem").mockImplementation(() => {
+    const setItem = vi.spyOn(window.localStorage, "setItem").mockImplementation(() => {
       throw new DOMException("Storage blocked");
     });
 
@@ -54,6 +55,7 @@ describe("JourneyStateProvider", () => {
     fireEvent.click(screen.getByRole("button", { name: "Set answer" }));
 
     await waitFor(() => expect(screen.getByTestId("answer")).toHaveTextContent("girl"));
+    expect(setItem).toHaveBeenCalledWith(STORAGE_KEY, expect.any(String));
   });
 
   it("hydrates stored progress before persisting", async () => {
@@ -78,6 +80,7 @@ describe("JourneyStateProvider", () => {
       expect(screen.getByTestId("completed")).toHaveTextContent("benefit"),
     );
     await waitFor(() => expect(setItem).toHaveBeenCalled());
-    expect(setItem).toHaveBeenCalledWith(STORAGE_KEY, JSON.stringify(stored));
+    expect(setItem).toHaveBeenCalledTimes(1);
+    expect(setItem.mock.calls[0]).toEqual([STORAGE_KEY, JSON.stringify(stored)]);
   });
 });
