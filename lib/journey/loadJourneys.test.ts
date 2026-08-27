@@ -116,7 +116,63 @@ describe("validateJourney", () => {
 });
 
 describe("loadJourneys", () => {
-  it("loads the three explicitly imported placeholder journeys", () => {
+  it("loads and validates the three explicitly imported journeys", () => {
+    const journeys = loadJourneys();
+
     expect(loadJourneys().map(({ id }) => id)).toEqual(["birth", "death", "turning18"]);
+    expect(() => journeys.forEach(validateJourney)).not.toThrow();
+  });
+
+  it("routes birth registration tracks and personalized benefits", () => {
+    const birth = loadJourneys().find(({ id }) => id === "birth");
+    const register = birth?.steps.find(({ id }) => id === "register-birth");
+    const lateRegister = birth?.steps.find(({ id }) => id === "late-register-birth");
+    const certificate = birth?.steps.find(({ id }) => id === "get-certificate-copy");
+    const sukanya = birth?.steps.find(({ id }) => id === "sukanya");
+
+    expect(register?.conditions).toEqual([
+      { questionId: "birth-timing", equals: "within-one-year" },
+    ]);
+    expect(lateRegister?.conditions).toEqual([
+      { questionId: "birth-timing", equals: "after-one-year" },
+    ]);
+    expect(certificate?.dependsOn).toEqual(["register-birth", "late-register-birth"]);
+    expect(sukanya).toMatchObject({
+      dependsOn: ["baby-aadhaar"],
+      conditions: [{ questionId: "gender", equals: "girl" }],
+    });
+  });
+
+  it("routes bank settlement by nominee status", () => {
+    const death = loadJourneys().find(({ id }) => id === "death");
+    const nominee = death?.steps.find(({ id }) => id === "bank-settlement");
+    const noNominee = death?.steps.find(
+      ({ id }) => id === "bank-settlement-no-nominee",
+    );
+
+    expect(nominee).toMatchObject({
+      dependsOn: ["death-certificate"],
+      conditions: [{ questionId: "nominee-registered", equals: "yes" }],
+      letterTemplateId: "deceased-bank-claim",
+    });
+    expect(noNominee).toMatchObject({
+      dependsOn: ["death-certificate", "family-member-certificate"],
+      conditions: [{ questionId: "nominee-registered", equals: "no" }],
+      letterTemplateId: "deceased-bank-claim",
+    });
+  });
+
+  it("personalizes turning-18 bank and driving steps", () => {
+    const turning18 = loadJourneys().find(({ id }) => id === "turning18");
+    const bank = turning18?.steps.find(({ id }) => id === "bank-major");
+    const driving = turning18?.steps.find(({ id }) => id === "driving-licence");
+
+    expect(bank?.conditions).toEqual([
+      { questionId: "minor-bank-account", equals: "yes" },
+    ]);
+    expect(driving).toMatchObject({
+      dependsOn: ["aadhaar-biometric"],
+      conditions: [{ questionId: "wants-to-drive", equals: "yes" }],
+    });
   });
 });

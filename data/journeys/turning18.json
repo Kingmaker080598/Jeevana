@@ -2,6 +2,81 @@
   "id": "turning18",
   "name": "Turning 18",
   "name_te": "18 సంవత్సరాలు నిండడం",
-  "intakeQuestions": [],
-  "steps": []
+  "intakeQuestions": [
+    {
+      "id": "minor-bank-account",
+      "prompt": "Do you have a bank account opened as a minor?",
+      "prompt_te": "మైనర్‌గా ఉన్నప్పుడు తెరిచిన బ్యాంకు ఖాతా ఉందా?",
+      "options": [
+        { "id": "yes", "label": "Yes", "label_te": "అవును" },
+        { "id": "no", "label": "No", "label_te": "లేదు" }
+      ]
+    },
+    {
+      "id": "wants-to-drive",
+      "prompt": "Do you want to drive?",
+      "prompt_te": "మీరు వాహనం నడపాలనుకుంటున్నారా?",
+      "options": [
+        { "id": "yes", "label": "Yes", "label_te": "అవును" },
+        { "id": "no", "label": "No", "label_te": "లేదు" }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "voter-id",
+      "name": "Enrol as a voter (Form 6)",
+      "name_te": "ఓటరుగా నమోదు చేసుకోండి (ఫారం 6)",
+      "authority": "Election Commission of India",
+      "portal": "https://voters.eci.gov.in",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "Turning 18 makes you eligible to enrol as a voter using Form 6. Completing this gives you the voter registration needed to take part in elections.",
+      "whyPlain_te": "18 సంవత్సరాలు నిండితే ఫారం 6తో ఓటరుగా నమోదు చేసుకోవచ్చు. ఇది పూర్తయితే ఎన్నికల్లో పాల్గొనడానికి అవసరమైన ఓటరు నమోదు సిద్ధమవుతుంది.",
+      "documents": ["Aadhaar", "Address proof", "Age proof"],
+      "dependsOn": []
+    },
+    {
+      "id": "aadhaar-biometric",
+      "name": "Mandatory Aadhaar biometric update",
+      "name_te": "తప్పనిసరి ఆధార్ బయోమెట్రిక్ అప్‌డేట్",
+      "authority": "Aadhaar enrolment centre",
+      "portal": "Aadhaar enrolment centre",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "The mandatory biometric update is due at 15, so first verify whether it was completed. If it was missed, finish it at an enrolment centre before relying on Aadhaar for the learner's-licence flow.",
+      "whyPlain_te": "తప్పనిసరి బయోమెట్రిక్ అప్‌డేట్ 15 ఏళ్లకే చేయాలి కాబట్టి అది పూర్తైందో లేదో ముందుగా చూసుకోండి. మిస్సయితే లెర్నర్ లైసెన్స్ పనికి ఆధార్ ఉపయోగించే ముందు నమోదు కేంద్రంలో పూర్తి చేయండి.",
+      "documents": [],
+      "dependsOn": []
+    },
+    {
+      "id": "bank-major",
+      "name": "Convert minor bank account to major",
+      "name_te": "మైనర్ బ్యాంకు ఖాతాను మేజర్ ఖాతాగా మార్చండి",
+      "authority": "Bank branch",
+      "portal": "Bank branch",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "If your account was opened while you were a minor, the bank needs to update it now that you are 18. Visiting the branch with KYC completes the change so the account reflects your adult status.",
+      "whyPlain_te": "మీ ఖాతా మైనర్‌గా ఉన్నప్పుడు తెరిచినదైతే, 18 ఏళ్లు నిండిన తర్వాత బ్యాంకులో దాన్ని అప్‌డేట్ చేయాలి. KYCతో శాఖకు వెళ్లి మార్పు పూర్తిచేస్తే ఖాతా మీ మేజర్ స్థితిని చూపిస్తుంది.",
+      "documents": ["KYC"],
+      "dependsOn": [],
+      "conditions": [{ "questionId": "minor-bank-account", "equals": "yes" }],
+      "letterTemplateId": "minor-to-major"
+    },
+    {
+      "id": "driving-licence",
+      "name": "Learner's licence",
+      "name_te": "లెర్నర్ లైసెన్స్",
+      "authority": "AP Transport/Parivahan Sarathi",
+      "portal": "AP Transport/Parivahan Sarathi",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "If you want to drive, the learner's licence is the first licence step through the AP Transport/Parivahan Sarathi flow. A completed Aadhaar biometric update helps ensure the Aadhaar needed for this application is ready.",
+      "whyPlain_te": "మీరు వాహనం నడపాలనుకుంటే AP Transport/Parivahan Sarathi విధానంలో లెర్నర్ లైసెన్స్ మొదటి అడుగు. ఈ దరఖాస్తుకు అవసరమైన ఆధార్ సిద్ధంగా ఉండేందుకు బయోమెట్రిక్ అప్‌డేట్ పూర్తైందో చూసుకోండి.",
+      "documents": ["Aadhaar", "Age proof"],
+      "dependsOn": ["aadhaar-biometric"],
+      "conditions": [{ "questionId": "wants-to-drive", "equals": "yes" }]
+    }
+  ]
 }

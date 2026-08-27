@@ -2,6 +2,135 @@
   "id": "birth",
   "name": "Birth",
   "name_te": "జననం",
-  "intakeQuestions": [],
-  "steps": []
+  "intakeQuestions": [
+    {
+      "id": "birth-timing",
+      "prompt": "When was the baby born?",
+      "prompt_te": "బిడ్డ ఎప్పుడు పుట్టింది?",
+      "options": [
+        { "id": "within-one-year", "label": "Within the last 1 year", "label_te": "గత ఏడాదిలోపు" },
+        { "id": "after-one-year", "label": "More than 1 year ago", "label_te": "ఏడాదికి ముందు" }
+      ]
+    },
+    {
+      "id": "gender",
+      "prompt": "What is the baby's gender?",
+      "prompt_te": "బిడ్డ లింగం ఏమిటి?",
+      "options": [
+        { "id": "girl", "label": "Girl", "label_te": "బాలిక" },
+        { "id": "boy", "label": "Boy", "label_te": "బాలుడు" }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "register-birth",
+      "name": "Register the birth",
+      "name_te": "జననాన్ని నమోదు చేయండి",
+      "authority": "Municipality/Panchayat office",
+      "portal": "Municipality/Panchayat office",
+      "fee": "₹30",
+      "sla": "21 days",
+      "whyPlain": "This creates the baby's official birth record and lets you obtain the birth certificate. That certificate unlocks Aadhaar enrolment, ration-card updates, insurance and other services for the baby.",
+      "whyPlain_te": "ఇది బిడ్డకు అధికారిక జనన నమోదు కల్పించి, జనన ధృవీకరణ పత్రం తీసుకునే దారి తెరుస్తుంది. ఆ పత్రంతో ఆధార్, రేషన్ కార్డు, బీమా వంటి తర్వాతి పనులు చేసుకోవచ్చు.",
+      "documents": ["Hospital/doctor certificate", "Both parents' Aadhaar", "Address proof"],
+      "dependsOn": [],
+      "conditions": [{ "questionId": "birth-timing", "equals": "within-one-year" }],
+      "deadline": "Registering within 21 days of birth is free/simplest."
+    },
+    {
+      "id": "late-register-birth",
+      "name": "Late Registration of Birth",
+      "name_te": "ఆలస్య జనన నమోదు",
+      "authority": "Grama/Ward Sachivalayam or MeeSeva centre",
+      "portal": "Grama/Ward Sachivalayam or MeeSeva centre",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "Because more than a year has passed, the birth must follow the Late Registration of Birth track. Completing it creates the official record needed before the certificate and every certificate-based service can move forward.",
+      "whyPlain_te": "బిడ్డ పుట్టి ఏడాది దాటినందున ఆలస్య జనన నమోదు విధానంలో దరఖాస్తు చేయాలి. ఇది పూర్తయితేనే జనన ధృవీకరణ పత్రం తీసుకుని, దానిపై ఆధారపడే మిగతా పనులు ముందుకు తీసుకెళ్లగలరు.",
+      "documents": ["Hospital/doctor certificate", "Both parents' Aadhaar", "Address proof"],
+      "dependsOn": [],
+      "conditions": [{ "questionId": "birth-timing", "equals": "after-one-year" }],
+      "deadline": "Registering within 21 days of birth is free/simplest."
+    },
+    {
+      "id": "get-certificate-copy",
+      "name": "Download the birth certificate",
+      "name_te": "జనన ధృవీకరణ పత్రాన్ని డౌన్‌లోడ్ చేయండి",
+      "authority": "MeeSeva",
+      "portal": "https://ap.meeseva.gov.in",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "Use “Know Your Application Status” with the application reference number to track the request and download the certificate. Keep the copy handy because Aadhaar, ration-card and insurance steps depend on it.",
+      "whyPlain_te": "దరఖాస్తు రిఫరెన్స్ నంబర్‌తో “Know Your Application Status”లో స్థితి చూసి ధృవీకరణ పత్రాన్ని డౌన్‌లోడ్ చేసుకోండి. ఆధార్, రేషన్ కార్డు, బీమా పనులకు ఇది అవసరం కాబట్టి కాపీని జాగ్రత్తగా ఉంచండి.",
+      "documents": ["Application reference number"],
+      "dependsOn": ["register-birth", "late-register-birth"]
+    },
+    {
+      "id": "baby-aadhaar",
+      "name": "Baby's Aadhaar enrolment",
+      "name_te": "బిడ్డ ఆధార్ నమోదు",
+      "authority": "Aadhaar enrolment centre",
+      "portal": "Nearest Aadhaar enrolment centre",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "Aadhaar gives the baby an identity record used by many services. Enrol after receiving the birth certificate, and it will also unlock the Sukanya account step for a girl child.",
+      "whyPlain_te": "ఆధార్ బిడ్డకు ఎన్నో సేవల్లో ఉపయోగపడే గుర్తింపు రికార్డు ఇస్తుంది. జనన ధృవీకరణ పత్రం వచ్చిన తర్వాత నమోదు చేయండి; బాలిక అయితే సుకన్య ఖాతా పనికీ ఇది దారి తెరుస్తుంది.",
+      "documents": ["Birth certificate"],
+      "dependsOn": ["get-certificate-copy"]
+    },
+    {
+      "id": "ration-card-add",
+      "name": "Add baby to rice/ration card",
+      "name_te": "బిడ్డను బియ్యం/రేషన్ కార్డులో చేర్చండి",
+      "authority": "MeeSeva/Sachivalayam",
+      "portal": "MeeSeva/Sachivalayam",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "Adding the baby keeps the household's rice or ration card record complete. The birth certificate is the document that allows this family record update to move ahead.",
+      "whyPlain_te": "బిడ్డను చేర్చితే కుటుంబ బియ్యం లేదా రేషన్ కార్డు వివరాలు పూర్తిగా ఉంటాయి. ఈ కుటుంబ రికార్డు మార్పు చేయడానికి జనన ధృవీకరణ పత్రం అవసరం.",
+      "documents": ["Birth certificate"],
+      "dependsOn": ["get-certificate-copy"]
+    },
+    {
+      "id": "vaccination",
+      "name": "Vaccination schedule (U-WIN)",
+      "name_te": "టీకాల షెడ్యూల్ (U-WIN)",
+      "authority": "U-WIN",
+      "portal": "U-WIN",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "The vaccination schedule starts at birth, so this step can begin without waiting for registration paperwork. Following it helps you keep the baby's vaccinations on track from the start.",
+      "whyPlain_te": "టీకాల షెడ్యూల్ పుట్టినప్పటి నుంచే మొదలవుతుంది కాబట్టి జనన నమోదు పత్రాల కోసం వేచి ఉండాల్సిన అవసరం లేదు. మొదటి నుంచే టీకాలు సమయానికి పడేలా ఇది సహాయపడుతుంది.",
+      "documents": [],
+      "dependsOn": []
+    },
+    {
+      "id": "sukanya",
+      "name": "Sukanya Samriddhi account",
+      "name_te": "సుకన్య సమృద్ధి ఖాతా",
+      "authority": "Post office or bank",
+      "portal": "Post office or bank",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "For a girl child, this account creates a dedicated savings path for her future. It becomes actionable after the baby's Aadhaar is ready, alongside the birth certificate.",
+      "whyPlain_te": "బాలిక భవిష్యత్తు కోసం ప్రత్యేకంగా పొదుపు మొదలుపెట్టే మార్గం ఈ ఖాతా. బిడ్డ ఆధార్ సిద్ధమైన తర్వాత, జనన ధృవీకరణ పత్రంతో కలిసి ఈ పని చేయవచ్చు.",
+      "documents": ["Baby's Aadhaar", "Birth certificate"],
+      "dependsOn": ["baby-aadhaar"],
+      "conditions": [{ "questionId": "gender", "equals": "girl" }]
+    },
+    {
+      "id": "insurance-add",
+      "name": "Add baby to health insurance",
+      "name_te": "బిడ్డను ఆరోగ్య బీమాలో చేర్చండి",
+      "authority": "Employer policy or PM-JAY",
+      "portal": "Employer policy or PM-JAY",
+      "fee": "",
+      "sla": "",
+      "whyPlain": "Adding the baby makes the health-insurance record include the newest family member. The birth certificate is needed to start the update through an employer policy or PM-JAY.",
+      "whyPlain_te": "బిడ్డను చేర్చితే కుటుంబంలోని కొత్త సభ్యుడికి కూడా ఆరోగ్య బీమా రికార్డులో చోటు ఉంటుంది. ఉద్యోగ బీమా పాలసీ లేదా PM-JAYలో ఈ మార్పు మొదలుపెట్టడానికి జనన ధృవీకరణ పత్రం అవసరం.",
+      "documents": ["Birth certificate"],
+      "dependsOn": ["get-certificate-copy"]
+    }
+  ]
 }
