@@ -37,6 +37,7 @@ export function LanguageProvider({ children }: Readonly<{ children: ReactNode }>
 
   useEffect(() => {
     if (!isHydrated) return;
+    document.documentElement.lang = language;
     try {
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     } catch {

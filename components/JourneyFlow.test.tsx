@@ -66,4 +66,11 @@ describe("JourneyFlow", () => {
       "true",
     );
   });
+
+  it("uses the Telugu question as the accessible name in Telugu mode", async () => {
+    window.localStorage.setItem("jeevana:language:v1", "te");
+    renderFlow();
+
+    expect(await screen.findByRole("heading", { name: "బిడ్డ ఎప్పుడు పుట్టింది?" })).toBeInTheDocument();
+  });
 });

@@ -14,6 +14,7 @@ function Probe() {
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
+  document.documentElement.lang = "en";
 });
 
 describe("LanguageProvider", () => {
@@ -27,6 +28,7 @@ describe("LanguageProvider", () => {
     expect(screen.getByRole("button")).toHaveTextContent("en");
     fireEvent.click(screen.getByRole("button"));
     expect(screen.getByRole("button")).toHaveTextContent("te");
+    expect(document.documentElement).toHaveAttribute("lang", "te");
     await waitFor(() =>
       expect(window.localStorage.getItem("jeevana:language:v1")).toBe("te"),
     );

@@ -5,12 +5,17 @@ import { useMemo, useState } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
 import type { Journey, ResolvedStep, StepState } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
-import { useLanguage } from "./LanguageProvider";
+import { useLanguage, type Language } from "./LanguageProvider";
 
 const stateTone: Record<Exclude<StepState, "HIDDEN">, string> = {
   DONE: "border-[var(--leaf)] bg-emerald-50 text-[var(--leaf)]",
   UNLOCKED: "border-[var(--marigold)] bg-[var(--marigold-soft)] text-[var(--ink)]",
   LOCKED: "border-[var(--line)] bg-stone-100 text-[var(--muted)]",
+};
+
+const stateLabel: Record<Language, Record<Exclude<StepState, "HIDDEN">, string>> = {
+  en: { DONE: "DONE", UNLOCKED: "UNLOCKED", LOCKED: "LOCKED" },
+  te: { DONE: "పూర్తయింది", UNLOCKED: "అందుబాటులో ఉంది", LOCKED: "లాక్ అయింది" },
 };
 
 function isVisibleStep(
@@ -69,7 +74,10 @@ export function JourneyFlow({ journey }: Readonly<{ journey: Journey }>) {
             style={{ width: `${((questionIndex + 1) / journey.intakeQuestions.length) * 100}%` }}
           />
         </div>
-        <h1 className="mt-10 font-serif text-4xl font-bold leading-tight text-[var(--ink)]" aria-label={question.prompt}>
+        <h1
+          className="mt-10 font-serif text-4xl font-bold leading-tight text-[var(--ink)]"
+          aria-label={isTelugu ? question.prompt_te : question.prompt}
+        >
           {isTelugu ? question.prompt_te : question.prompt}
         </h1>
         <div className="mt-8 grid gap-3">
@@ -155,7 +163,7 @@ export function JourneyFlow({ journey }: Readonly<{ journey: Journey }>) {
                     ) : null}
                   </div>
                   <span className={`mt-3 inline-block border px-2 py-1 font-mono text-[10px] font-bold tracking-wider ${stateTone[result.state]}`}>
-                    {result.state}
+                    {stateLabel[language][result.state]}
                   </span>
                   {result.state === "LOCKED" ? (
                     <p className="mt-3 text-sm text-[var(--muted)]">
