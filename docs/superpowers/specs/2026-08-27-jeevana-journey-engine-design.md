@@ -2,7 +2,11 @@
 
 ## Goal
 
-Build a Next.js 14 App Router prototype whose core is a data-driven journey graph for Andhra Pradesh public-service life events. Journey definitions are static JSON loaded at build time; application code resolves visibility and progress without embedding journey-specific rules.
+Build a Next.js 14 App Router prototype in TypeScript and Tailwind CSS whose core is a data-driven journey graph for Andhra Pradesh public-service life events. Journey definitions are static JSON loaded at build time; application code resolves visibility and progress without embedding journey-specific rules.
+
+## Scope
+
+This hackathon prototype uses only synthetic, static journey data. It has no authentication, user accounts, database, API persistence, or external public-service integrations. Browser localStorage is the sole persistence mechanism.
 
 ## Selected approach
 
@@ -90,7 +94,7 @@ Completion storage is independent of resolver visibility. No action removes comp
 
 ## Debug surface
 
-The root page is intentionally utilitarian. A server component loads validated journeys and passes them to a client debug component. The component lists journey metadata, intake controls, resolved step states, blocking dependencies, and completion toggles. Empty placeholder journeys render cleanly.
+The root page is intentionally utilitarian and styled only with a small set of Tailwind utility classes. A server component loads validated journeys and passes them to a client debug component. The component lists journey metadata, intake controls, resolved step states, blocking dependencies, and completion toggles. Empty placeholder journeys render cleanly.
 
 ## Testing
 
