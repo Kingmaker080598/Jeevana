@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --paper: #f6f1e6;
+  --ink: #17201d;
+  --muted: #5f6762;
+  --line: #c9c5b9;
+  --marigold: #e5a719;
+  --marigold-dark: #9a6500;
+  --marigold-soft: #fff0bd;
+  --leaf: #23634d;
+}
+
 body {
-  background: #f8fafc;
-  color: #0f172a;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
 }

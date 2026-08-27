@@ -20,6 +20,7 @@ import {
 
 interface JourneyStateContextValue {
   state: JourneyState;
+  isHydrated: boolean;
   setAnswer: (
     journeyId: string,
     questionId: string,
@@ -63,13 +64,14 @@ export function JourneyStateProvider({ children }: Readonly<{ children: ReactNod
   const value = useMemo<JourneyStateContextValue>(
     () => ({
       state,
+      isHydrated,
       setAnswer: (journeyId, questionId, optionId) =>
         dispatch({ type: "setAnswer", journeyId, questionId, optionId }),
       toggleCompleted: (journeyId, stepId) =>
         dispatch({ type: "toggleCompleted", journeyId, stepId }),
       reset: () => dispatch({ type: "reset" }),
     }),
-    [state],
+    [isHydrated, state],
   );
 
   return (

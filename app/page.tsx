@@ -1,13 +1,8 @@
-import { DebugJourneys } from "@/components/DebugJourneys";
-import { JourneyStateProvider } from "@/components/JourneyStateProvider";
+import { HomeContent } from "@/components/HomeContent";
 import { loadJourneys } from "@/lib/journey/loadJourneys";
 
 export default function HomePage() {
   const journeys = loadJourneys();
 
-  return (
-    <JourneyStateProvider>
-      <DebugJourneys journeys={journeys} />
-    </JourneyStateProvider>
-  );
+  return <HomeContent journeys={journeys} />;
 }
