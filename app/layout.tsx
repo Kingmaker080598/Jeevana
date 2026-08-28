@@ -5,7 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Jeevana",
-  description: "A life-events navigator for Andhra Pradesh public services.",
+  description:
+    "After a birth or a death, no one tells you what comes next. A sequence layer for Indian public services. Built for India, piloted in Andhra Pradesh.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
