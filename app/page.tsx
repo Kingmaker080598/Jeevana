@@ -1,8 +1,6 @@
 import { HomeContent } from "@/components/HomeContent";
-import { loadJourneys } from "@/lib/journey/loadJourneys";
+import { LIFE_STAGES } from "@/data/lifeStages";
 
 export default function HomePage() {
-  const journeys = loadJourneys();
-
-  return <HomeContent journeys={journeys} />;
+  return <HomeContent stages={LIFE_STAGES} />;
 }
