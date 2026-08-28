@@ -6,11 +6,18 @@ import { HomeContent } from "./HomeContent";
 
 afterEach(cleanup);
 
+const deathEvidence = {
+  steps: 8,
+  departments: 7,
+  portals: 6,
+  documentedSequences: 0,
+};
+
 describe("HomeContent", () => {
   it("renders only the three live stages as journey links", () => {
     render(
       <LanguageProvider>
-        <HomeContent stages={LIFE_STAGES} />
+        <HomeContent stages={LIFE_STAGES} evidence={deathEvidence} />
       </LanguageProvider>,
     );
 
@@ -30,7 +37,7 @@ describe("HomeContent", () => {
   it("renders planned stages as disabled, non-interactive rows without routes", () => {
     render(
       <LanguageProvider>
-        <HomeContent stages={LIFE_STAGES} />
+        <HomeContent stages={LIFE_STAGES} evidence={deathEvidence} />
       </LanguageProvider>,
     );
 
@@ -44,6 +51,39 @@ describe("HomeContent", () => {
       expect(row).not.toHaveAttribute("tabindex");
       expect(within(row).queryByRole("link")).not.toBeInTheDocument();
       expect(within(row).getByText("Planned")).toBeInTheDocument();
+      expect(within(row).queryByText(stage.description)).not.toBeInTheDocument();
     }
+  });
+
+  it("presents the problem, death-journey evidence, and live journeys in the required order", () => {
+    render(
+      <LanguageProvider>
+        <HomeContent stages={LIFE_STAGES} evidence={deathEvidence} />
+      </LanguageProvider>,
+    );
+
+    expect(screen.getByText("Built for India. Piloted in Andhra Pradesh.")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "After a birth or a death, no one tells you what comes next.",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Open now" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Thirteen more stages mapped, not yet built.",
+      }),
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(screen.getByText("Steps")).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
+    expect(screen.getByText("Departments involved")).toBeInTheDocument();
+    expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.getByText("Separate portals")).toBeInTheDocument();
+    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.getByText("Places the sequence is documented")).toBeInTheDocument();
   });
 });
