@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadJourneys } from "@/lib/journey/loadJourneys";
-import { STORAGE_KEY } from "@/lib/state/journeyState";
+import { parseJourneyState, STORAGE_KEY } from "@/lib/state/journeyState";
 import { JourneyFlow } from "./JourneyFlow";
 import { JourneyStateProvider } from "./JourneyStateProvider";
 import { LanguageProvider, useLanguage } from "./LanguageProvider";
@@ -40,6 +40,11 @@ describe("JourneyFlow", () => {
     renderFlow();
 
     expect(await screen.findByRole("heading", { name: "When was the baby born?" })).toBeInTheDocument();
+    await waitFor(() =>
+      expect(parseJourneyState(window.localStorage.getItem(STORAGE_KEY)).selectedJourneyId).toBe(
+        "birth",
+      ),
+    );
     expect(screen.queryByRole("heading", { name: "What is the baby's gender?" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /More than 1 year ago/ }));

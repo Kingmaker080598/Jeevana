@@ -92,4 +92,18 @@ describe("DebugJourneys", () => {
 
     expect(screen.getByText("No steps supplied yet.")).toBeInTheDocument();
   });
+
+  it("labels the console as internal and links back to the homepage", async () => {
+    render(
+      <JourneyStateProvider>
+        <DebugJourneys journeys={[conditionalJourney]} />
+      </JourneyStateProvider>,
+    );
+
+    expect(await screen.findByText("Internal")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Back to homepage" })).toHaveAttribute(
+      "href",
+      "/",
+    );
+  });
 });

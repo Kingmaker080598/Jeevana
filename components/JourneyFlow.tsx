@@ -39,8 +39,8 @@ export function JourneyFlow({
   );
 
   useEffect(() => {
-    selectJourney(journey.id);
-  }, [journey.id, selectJourney]);
+    if (isHydrated) selectJourney(journey.id);
+  }, [isHydrated, journey.id, selectJourney]);
 
   useEffect(() => {
     if (isHydrated && intakeComplete && !isEditing) router.replace(destination);

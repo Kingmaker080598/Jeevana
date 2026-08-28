@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
 import { isTeluguEnabled } from "@/lib/features";
@@ -167,6 +168,18 @@ export function DebugJourneys({ journeys }: Readonly<{ journeys: Journey[] }>) {
     <main className="min-h-screen bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:24px_24px] px-4 py-10 sm:px-8">
       <div className="mx-auto max-w-5xl">
         <header className="mb-8 border-l-8 border-amber-500 bg-white p-6 shadow-sm">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+            <span className="bg-slate-950 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300">
+              Internal
+            </span>
+            <Link
+              href="/"
+              aria-label="Back to homepage"
+              className="font-mono text-xs font-bold uppercase tracking-wide text-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+            >
+              ← Back to homepage
+            </Link>
+          </div>
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
               <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-emerald-800">

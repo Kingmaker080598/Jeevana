@@ -22,8 +22,8 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
   );
 
   useEffect(() => {
-    selectJourney(journey.id);
-  }, [journey.id, selectJourney]);
+    if (isHydrated) selectJourney(journey.id);
+  }, [isHydrated, journey.id, selectJourney]);
 
   if (!isHydrated || !resolved) {
     return (
