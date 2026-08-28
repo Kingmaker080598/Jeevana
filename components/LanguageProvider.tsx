@@ -8,10 +8,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { isTeluguEnabled } from "@/lib/features";
 
 export type Language = "en" | "te";
-
-const LANGUAGE_STORAGE_KEY = "jeevana:language:v1";
 
 interface LanguageContextValue {
   language: Language;
@@ -26,30 +25,24 @@ export function LanguageProvider({ children }: Readonly<{ children: ReactNode }>
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      if (stored === "en" || stored === "te") setLanguage(stored);
-    } catch {
-      // A blocked storage API should not prevent the app from loading in English.
-    }
+    setLanguage("en");
     setIsHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!isHydrated) return;
     document.documentElement.lang = language;
-    try {
-      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-    } catch {
-      // Language selection still works for the current session without persistence.
-    }
   }, [isHydrated, language]);
 
   const value = useMemo<LanguageContextValue>(
     () => ({
       language,
       isHydrated,
-      toggleLanguage: () => setLanguage((current) => (current === "en" ? "te" : "en")),
+      toggleLanguage: () => {
+        if (isTeluguEnabled()) {
+          setLanguage((current) => (current === "en" ? "te" : "en"));
+        }
+      },
     }),
     [isHydrated, language],
   );

@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import type { Journey } from "@/lib/journey/types";
+import { isTeluguEnabled } from "@/lib/features";
 import { useLanguage } from "./LanguageProvider";
 
 export function HomeContent({ journeys }: Readonly<{ journeys: Journey[] }>) {
   const { language } = useLanguage();
-  const isTelugu = language === "te";
+  const enableTelugu = isTeluguEnabled();
+  const isTelugu = enableTelugu && language === "te";
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
@@ -47,9 +49,9 @@ export function HomeContent({ journeys }: Readonly<{ journeys: Journey[] }>) {
                 <h3 className="font-serif text-3xl font-bold text-[var(--ink)]">
                   {isTelugu ? journey.name_te : journey.name}
                 </h3>
-                <p className="mt-2 text-sm text-[var(--muted)]">
+                {enableTelugu ? <p className="mt-2 text-sm text-[var(--muted)]">
                   {isTelugu ? journey.name : journey.name_te}
-                </p>
+                </p> : null}
                 <p className="mt-5 font-mono text-xs font-bold uppercase tracking-wider text-[var(--leaf)]">
                   {isTelugu ? "దశలను చూడండి →" : "See your steps →"}
                 </p>

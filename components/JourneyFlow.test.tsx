@@ -4,7 +4,7 @@ import { loadJourneys } from "@/lib/journey/loadJourneys";
 import { STORAGE_KEY } from "@/lib/state/journeyState";
 import { JourneyFlow } from "./JourneyFlow";
 import { JourneyStateProvider } from "./JourneyStateProvider";
-import { LanguageProvider } from "./LanguageProvider";
+import { LanguageProvider, useLanguage } from "./LanguageProvider";
 
 const birth = loadJourneys().find(({ id }) => id === "birth")!;
 const { replace } = vi.hoisted(() => ({ replace: vi.fn() }));
@@ -17,6 +17,7 @@ afterEach(() => {
   cleanup();
   replace.mockReset();
   window.localStorage.clear();
+  vi.unstubAllEnvs();
 });
 
 function renderFlow() {
@@ -27,6 +28,11 @@ function renderFlow() {
       </JourneyStateProvider>
     </LanguageProvider>,
   );
+}
+
+function LanguageToggle() {
+  const { toggleLanguage } = useLanguage();
+  return <button type="button" onClick={toggleLanguage}>Enable Telugu</button>;
 }
 
 describe("JourneyFlow", () => {
@@ -99,8 +105,16 @@ describe("JourneyFlow", () => {
   });
 
   it("uses the Telugu question as the accessible name in Telugu mode", async () => {
-    window.localStorage.setItem("jeevana:language:v1", "te");
-    renderFlow();
+    vi.stubEnv("NEXT_PUBLIC_ENABLE_TE", "true");
+    render(
+      <LanguageProvider>
+        <LanguageToggle />
+        <JourneyStateProvider>
+          <JourneyFlow journey={birth} />
+        </JourneyStateProvider>
+      </LanguageProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Enable Telugu" }));
 
     expect(await screen.findByRole("heading", { name: "బిడ్డ ఎప్పుడు పుట్టింది?" })).toBeInTheDocument();
   });

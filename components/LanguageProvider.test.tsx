@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LanguageProvider, useLanguage } from "./LanguageProvider";
 
 function Probe() {
@@ -15,10 +15,13 @@ afterEach(() => {
   cleanup();
   window.localStorage.clear();
   document.documentElement.lang = "en";
+  vi.unstubAllEnvs();
 });
 
+beforeEach(() => vi.stubEnv("NEXT_PUBLIC_ENABLE_TE", "true"));
+
 describe("LanguageProvider", () => {
-  it("persists the selected language", async () => {
+  it("changes the selected language for the current session", async () => {
     render(
       <LanguageProvider>
         <Probe />
@@ -29,12 +32,10 @@ describe("LanguageProvider", () => {
     fireEvent.click(screen.getByRole("button"));
     expect(screen.getByRole("button")).toHaveTextContent("te");
     expect(document.documentElement).toHaveAttribute("lang", "te");
-    await waitFor(() =>
-      expect(window.localStorage.getItem("jeevana:language:v1")).toBe("te"),
-    );
+    expect(window.localStorage.getItem("jeevana:language:v1")).toBeNull();
   });
 
-  it("hydrates a stored Telugu preference", async () => {
+  it("does not hydrate a legacy stored Telugu preference", async () => {
     window.localStorage.setItem("jeevana:language:v1", "te");
     render(
       <LanguageProvider>
@@ -42,6 +43,22 @@ describe("LanguageProvider", () => {
       </LanguageProvider>,
     );
 
-    await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("te"));
+    await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("en"));
+  });
+
+  it("forces English and ignores a stored Telugu preference when disabled", async () => {
+    vi.stubEnv("NEXT_PUBLIC_ENABLE_TE", "false");
+    window.localStorage.setItem("jeevana:language:v1", "te");
+
+    render(
+      <LanguageProvider>
+        <Probe />
+      </LanguageProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("en"));
+    fireEvent.click(screen.getByRole("button"));
+    expect(screen.getByRole("button")).toHaveTextContent("en");
+    expect(document.documentElement).toHaveAttribute("lang", "en");
   });
 });

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
+import { isTeluguEnabled } from "@/lib/features";
 import type { Journey, Step } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
 import { useLanguage } from "./LanguageProvider";
@@ -9,7 +10,7 @@ import { useLanguage } from "./LanguageProvider";
 export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step: Step }>) {
   const { language } = useLanguage();
   const { state, isHydrated, selectJourney, toggleCompleted } = useJourneyState();
-  const isTelugu = language === "te";
+  const isTelugu = isTeluguEnabled() && language === "te";
   const progress = state.journeys[journey.id] ?? { answers: {}, completedStepIds: [] };
   const resolved = useMemo(
     () =>

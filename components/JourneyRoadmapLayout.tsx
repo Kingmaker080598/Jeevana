@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, type ReactNode } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
+import { isTeluguEnabled } from "@/lib/features";
 import type { Journey, ResolvedStep } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
 import { useLanguage } from "./LanguageProvider";
@@ -90,7 +91,7 @@ export function JourneyRoadmapLayout({ journey, children }: Readonly<{ journey: 
         <aside className="hidden border border-[var(--line)] bg-[var(--paper)] lg:sticky lg:top-4 lg:block lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
           <div className="border-b border-[var(--line)] px-4 py-4">
             <Link href="/" className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--leaf)]">← All journeys</Link>
-            <h1 className="mt-2 font-serif text-2xl font-bold text-[var(--ink)]">{language === "te" ? journey.name_te : journey.name}</h1>
+            <h1 className="mt-2 font-serif text-2xl font-bold text-[var(--ink)]">{isTeluguEnabled() && language === "te" ? journey.name_te : journey.name}</h1>
           </div>
           <nav aria-label="Journey steps" className="px-2">{navigation}</nav>
           <div className="border-t border-[var(--line)] p-3">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
+import { isTeluguEnabled } from "@/lib/features";
 import type { Journey } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
 import { useLanguage } from "./LanguageProvider";
@@ -26,7 +27,8 @@ export function JourneyFlow({
   const { state, isHydrated, selectJourney, setAnswer } = useJourneyState();
   const [isEditing, setIsEditing] = useState(forceEdit);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const isTelugu = language === "te";
+  const enableTelugu = isTeluguEnabled();
+  const isTelugu = enableTelugu && language === "te";
   const progress = state.journeys[journey.id] ?? { answers: {}, completedStepIds: [] };
   const intakeComplete = journey.intakeQuestions.every(
     (question) => progress.answers[question.id],
@@ -109,9 +111,9 @@ export function JourneyFlow({
               }`}
             >
               {isTelugu ? option.label_te : option.label}
-              <span className="ml-2 text-sm opacity-60">
+              {enableTelugu ? <span className="ml-2 text-sm opacity-60">
                 {isTelugu ? option.label : option.label_te}
-              </span>
+              </span> : null}
             </button>
           );
         })}

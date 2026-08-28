@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
+import { isTeluguEnabled } from "@/lib/features";
 import type { Journey, StepState } from "@/lib/journey/types";
 import type { JourneyProgress } from "@/lib/state/journeyState";
 import { useJourneyState } from "./JourneyStateProvider";
@@ -32,6 +33,7 @@ function JourneyCard({
     () => resolveJourney(journey, progress.answers, new Set(progress.completedStepIds)),
     [journey, progress.answers, progress.completedStepIds],
   );
+  const enableTelugu = isTeluguEnabled();
 
   return (
     <section className="overflow-hidden rounded-sm border border-slate-300 bg-white shadow-sm">
@@ -40,7 +42,7 @@ function JourneyCard({
           Journey / {journey.id}
         </p>
         <h2 className="mt-2 font-serif text-2xl leading-tight">
-          {journey.name} <span className="text-slate-400">/</span> {journey.name_te}
+          {journey.name} {enableTelugu ? <><span className="text-slate-400">/</span> {journey.name_te}</> : null}
         </h2>
       </div>
 
@@ -55,7 +57,7 @@ function JourneyCard({
               return (
                 <label key={question.id} htmlFor={inputId} className="grid gap-2 text-sm">
                   <span className="font-semibold text-slate-800">
-                    {question.prompt} / {question.prompt_te}
+                    {question.prompt} {enableTelugu ? ` / ${question.prompt_te}` : null}
                   </span>
                   <select
                     id={inputId}
@@ -68,7 +70,7 @@ function JourneyCard({
                     <option value="">Choose an answer</option>
                     {question.options.map((option) => (
                       <option key={option.id} value={option.id}>
-                        {option.label} / {option.label_te}
+                        {option.label} {enableTelugu ? ` / ${option.label_te}` : null}
                       </option>
                     ))}
                   </select>
@@ -91,7 +93,7 @@ function JourneyCard({
                           STEP {String(index + 1).padStart(2, "0")} · {result.step.id}
                         </p>
                         <h3 className="mt-1 font-serif text-xl text-slate-950">
-                          {result.step.name} / {result.step.name_te}
+                          {result.step.name} {enableTelugu ? ` / ${result.step.name_te}` : null}
                         </h3>
                       </div>
                       <div className="flex flex-wrap gap-2">
