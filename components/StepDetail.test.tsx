@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadJourneys } from "@/lib/journey/loadJourneys";
 import { STORAGE_KEY } from "@/lib/state/journeyState";
 import { JourneyStateProvider } from "./JourneyStateProvider";
@@ -13,10 +13,12 @@ const deathCertificate = death.steps.find(({ id }) => id === "death-certificate"
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
+  vi.unstubAllEnvs();
 });
 
 describe("StepDetail", () => {
   it("shows service details and marks an unlocked step done", async () => {
+    vi.stubEnv("NEXT_PUBLIC_ENABLE_FUTURE_SECTIONS", "true");
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
@@ -47,6 +49,33 @@ describe("StepDetail", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Mark incomplete" })).toBeInTheDocument(),
     );
+  });
+
+  it("hides reserved future sections by default", async () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        selectedJourneyId: "death",
+        journeys: {
+          death: {
+            answers: { "nominee-registered": "yes" },
+            completedStepIds: ["register-death", "death-certificate"],
+          },
+        },
+      }),
+    );
+    render(
+      <LanguageProvider>
+        <JourneyStateProvider>
+          <StepDetail journey={death} step={insurance} />
+        </JourneyStateProvider>
+      </LanguageProvider>,
+    );
+
+    expect(await screen.findByRole("heading", { name: "LIC/insurance claim intimation" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Nearest office" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Letter generator" })).not.toBeInTheDocument();
   });
 
   it("does not allow a blocked stored completion to be toggled", async () => {

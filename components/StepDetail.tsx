@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { resolveJourney } from "@/lib/journey/resolver";
-import { isTeluguEnabled } from "@/lib/features";
+import { areFutureSectionsEnabled, isTeluguEnabled } from "@/lib/features";
 import type { Journey, Step } from "@/lib/journey/types";
 import { useJourneyState } from "./JourneyStateProvider";
 import { useLanguage } from "./LanguageProvider";
@@ -11,6 +11,7 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
   const { language } = useLanguage();
   const { state, isHydrated, selectJourney, toggleCompleted } = useJourneyState();
   const isTelugu = isTeluguEnabled() && language === "te";
+  const showFutureSections = areFutureSectionsEnabled();
   const progress = state.journeys[journey.id] ?? { answers: {}, completedStepIds: [] };
   const resolved = useMemo(
     () =>
@@ -97,11 +98,11 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
                 <p className="mt-2 text-sm leading-6">{step.deadline}</p>
               </section>
             ) : null}
-            <section className="border border-dashed border-[var(--line)] bg-stone-50 p-4">
+            {showFutureSections ? <section className="border border-dashed border-[var(--line)] bg-stone-50 p-4">
               <h2 className="font-serif text-xl font-bold text-[var(--ink)]">Nearest office</h2>
               <p className="mt-2 text-sm text-[var(--muted)]">Office lookup will appear here.</p>
-            </section>
-            {step.letterTemplateId ? (
+            </section> : null}
+            {showFutureSections && step.letterTemplateId ? (
               <section className="border border-dashed border-[var(--line)] bg-stone-50 p-4">
                 <h2 className="font-serif text-xl font-bold text-[var(--ink)]">Letter generator</h2>
                 <p className="mt-2 text-sm text-[var(--muted)]">
