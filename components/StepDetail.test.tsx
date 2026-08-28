@@ -8,6 +8,7 @@ import { StepDetail } from "./StepDetail";
 
 const death = loadJourneys().find(({ id }) => id === "death")!;
 const insurance = death.steps.find(({ id }) => id === "insurance-claim")!;
+const deathCertificate = death.steps.find(({ id }) => id === "death-certificate")!;
 
 afterEach(() => {
   cleanup();
@@ -46,5 +47,32 @@ describe("StepDetail", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Mark incomplete" })).toBeInTheDocument(),
     );
+  });
+
+  it("does not allow a blocked stored completion to be toggled", async () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        selectedJourneyId: "death",
+        journeys: {
+          death: {
+            answers: { "nominee-registered": "yes" },
+            completedStepIds: ["death-certificate"],
+          },
+        },
+      }),
+    );
+
+    render(
+      <LanguageProvider>
+        <JourneyStateProvider>
+          <StepDetail journey={death} step={deathCertificate} />
+        </JourneyStateProvider>
+      </LanguageProvider>,
+    );
+
+    expect(await screen.findByText(/Complete first: Register the death/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Mark/ })).not.toBeInTheDocument();
   });
 });

@@ -169,4 +169,34 @@ describe("resolveJourney", () => {
       byId(resolveJourney(subject, { gender: "girl" }, completed), "benefit").state,
     ).toBe("DONE");
   });
+
+  it("does not resolve a stored completion as done while its dependency is incomplete", () => {
+    const subject = journey([
+      step("prerequisite"),
+      step("dependent", { dependsOn: ["prerequisite"] }),
+    ]);
+
+    expect(
+      byId(resolveJourney(subject, {}, new Set(["dependent"])), "dependent"),
+    ).toMatchObject({
+      state: "LOCKED",
+      blockingDependencyIds: ["prerequisite"],
+    });
+  });
+
+  it("recomputes a downstream completion when its prerequisite is undone and redone", () => {
+    const subject = journey([
+      step("prerequisite"),
+      step("dependent", { dependsOn: ["prerequisite"] }),
+    ]);
+    const bothCompleted = new Set(["prerequisite", "dependent"]);
+
+    expect(byId(resolveJourney(subject, {}, bothCompleted), "dependent").state).toBe("DONE");
+
+    bothCompleted.delete("prerequisite");
+    expect(byId(resolveJourney(subject, {}, bothCompleted), "dependent").state).toBe("LOCKED");
+
+    bothCompleted.add("prerequisite");
+    expect(byId(resolveJourney(subject, {}, bothCompleted), "dependent").state).toBe("DONE");
+  });
 });

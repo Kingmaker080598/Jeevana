@@ -27,6 +27,20 @@ export function resolveJourney(
       };
     }
 
+    const blockingDependencyIds = step.dependsOn.filter(
+      (dependencyId) =>
+        visibleStepIds.has(dependencyId) && !completedStepIds.has(dependencyId),
+    );
+
+    if (blockingDependencyIds.length > 0) {
+      return {
+        step,
+        state: "LOCKED",
+        blockingDependencyIds,
+        isConditional,
+      };
+    }
+
     if (completedStepIds.has(step.id)) {
       return {
         step,
@@ -36,15 +50,10 @@ export function resolveJourney(
       };
     }
 
-    const blockingDependencyIds = step.dependsOn.filter(
-      (dependencyId) =>
-        visibleStepIds.has(dependencyId) && !completedStepIds.has(dependencyId),
-    );
-
     return {
       step,
-      state: blockingDependencyIds.length > 0 ? "LOCKED" : "UNLOCKED",
-      blockingDependencyIds,
+      state: "UNLOCKED",
+      blockingDependencyIds: [],
       isConditional,
     };
   });
