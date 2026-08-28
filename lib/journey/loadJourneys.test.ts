@@ -3,6 +3,16 @@ import { loadJourneys, validateJourney } from "./loadJourneys";
 import { resolveJourney } from "./resolver";
 import type { Journey, Step } from "./types";
 
+const APPROVED_OFFICIAL_SOURCE_ROOTS = new Set([
+  "https://crsorgi.gov.in",
+  "https://uidai.gov.in",
+  "https://voters.eci.gov.in",
+  "https://www.incometax.gov.in",
+  "https://parivahan.gov.in",
+  "https://www.epfindia.gov.in",
+  "https://ap.meeseva.gov.in",
+]);
+
 function step(id: string, overrides: Partial<Step> = {}): Step {
   return {
     id,
@@ -132,6 +142,41 @@ describe("loadJourneys", () => {
     for (const candidate of steps) {
       expect(candidate).toHaveProperty("officialSource");
       expect(Reflect.get(candidate, "lastVerified")).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  it("uses only government hostnames for official sources", () => {
+    const sources = loadJourneys()
+      .flatMap((journey) => journey.steps)
+      .map((candidate) => candidate.officialSource)
+      .filter((source): source is string => source !== null);
+
+    for (const source of sources) {
+      const hostname = new URL(source).hostname;
+      expect(
+        hostname.endsWith(".gov.in") || hostname.endsWith(".nic.in"),
+        `${source} is not hosted on a .gov.in or .nic.in domain`,
+      ).toBe(true);
+    }
+  });
+
+  it("uses only the approved portal root landing pages", () => {
+    const uniqueSources = [
+      ...new Set(
+        loadJourneys()
+          .flatMap((journey) => journey.steps)
+          .map((candidate) => candidate.officialSource)
+          .filter((source): source is string => source !== null),
+      ),
+    ].sort();
+
+    console.log(`Official source URLs:\n${uniqueSources.join("\n")}`);
+
+    for (const source of uniqueSources) {
+      expect(
+        APPROVED_OFFICIAL_SOURCE_ROOTS.has(source),
+        `${source} is not an approved root landing page`,
+      ).toBe(true);
     }
   });
 

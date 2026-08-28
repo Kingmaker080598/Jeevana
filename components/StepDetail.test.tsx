@@ -43,14 +43,11 @@ describe("StepDetail", () => {
 
     expect(await screen.findByRole("heading", { name: "LIC/insurance claim intimation" })).toBeInTheDocument();
     expect(screen.getByText("LIC/insurance provider")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Official source" })).toHaveAttribute(
-      "href",
-      "https://www.licindia.in/en/web/guest/claims-settlement-requirements",
-    );
+    expect(screen.queryByRole("link", { name: "Official source" })).not.toBeInTheDocument();
     expect(screen.getByText("Last verified: 28 August 2026")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Fees and timelines are set by state and local authorities and change; always confirm on the official page linked.",
+        "Fees and timelines are set by state and local authorities and change; confirm them with the responsible authority before applying.",
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Nearest office" })).toBeInTheDocument();
@@ -140,6 +137,10 @@ describe("StepDetail", () => {
     );
 
     expect(await screen.findByText(/Complete first: Register the death/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Official source" })).toHaveAttribute(
+      "href",
+      "https://ap.meeseva.gov.in",
+    );
     expect(screen.queryByRole("button", { name: /Mark/ })).not.toBeInTheDocument();
   });
 });
