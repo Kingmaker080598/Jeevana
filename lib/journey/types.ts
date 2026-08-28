@@ -27,6 +27,8 @@ export interface Step {
   sla: string;
   whyPlain: string;
   whyPlain_te: string;
+  officialSource: string | null;
+  lastVerified: string;
   documents: string[];
   dependsOn: string[];
   conditions?: Condition[];

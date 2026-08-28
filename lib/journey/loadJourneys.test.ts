@@ -14,6 +14,8 @@ function step(id: string, overrides: Partial<Step> = {}): Step {
     sla: "One day",
     whyPlain: "Required for testing",
     whyPlain_te: "పరీక్ష కోసం అవసరం",
+    officialSource: null,
+    lastVerified: "2026-08-28",
     documents: [],
     dependsOn: [],
     ...overrides,
@@ -122,6 +124,37 @@ describe("loadJourneys", () => {
 
     expect(loadJourneys().map(({ id }) => id)).toEqual(["birth", "death", "turning18"]);
     expect(() => journeys.forEach(validateJourney)).not.toThrow();
+  });
+
+  it("carries verification metadata on every live step", () => {
+    const steps = loadJourneys().flatMap((journey) => journey.steps);
+
+    for (const candidate of steps) {
+      expect(candidate).toHaveProperty("officialSource");
+      expect(Reflect.get(candidate, "lastVerified")).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  it("contains no specific fee or processing-time claims", () => {
+    const journeys = loadJourneys();
+    const steps = journeys.flatMap((journey) => journey.steps);
+    const serialized = JSON.stringify(journeys);
+
+    expect(steps.every((candidate) => candidate.fee === "" && candidate.sla === "")).toBe(true);
+    expect(serialized).not.toMatch(/₹30|₹35|15-30 working days|8-10 copies/);
+  });
+
+  it("keeps the sourced free-registration rule for birth and death", () => {
+    const journeys = loadJourneys();
+    const birthRegistration = journeys
+      .find((journey) => journey.id === "birth")
+      ?.steps.find((candidate) => candidate.id === "register-birth");
+    const deathRegistration = journeys
+      .find((journey) => journey.id === "death")
+      ?.steps.find((candidate) => candidate.id === "register-death");
+
+    expect(birthRegistration?.deadline).toMatch(/free within 21 days/i);
+    expect(deathRegistration?.deadline).toMatch(/free within 21 days/i);
   });
 
   it("routes birth registration tracks and personalized benefits", () => {

@@ -38,6 +38,12 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
     .map((id) => journey.steps.find((candidate) => candidate.id === id))
     .filter((candidate): candidate is Step => Boolean(candidate))
     .map((candidate) => (isTelugu ? candidate.name_te : candidate.name));
+  const lastVerified = new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${step.lastVerified}T00:00:00Z`));
 
   return (
     <div>
@@ -90,6 +96,26 @@ export function StepDetail({ journey, step }: Readonly<{ journey: Journey; step:
           </section>
 
           <div className="grid content-start gap-5">
+            <section className="border border-[var(--line)] bg-[var(--paper)] p-4">
+              {step.officialSource ? (
+                <a
+                  href={step.officialSource}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-bold text-[var(--leaf)] underline decoration-[var(--marigold)] decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-[var(--marigold)]"
+                >
+                  Official source <span aria-hidden="true">↗</span>
+                </a>
+              ) : null}
+              <p className={step.officialSource ? "mt-3 text-xs text-[var(--muted)]" : "text-xs text-[var(--muted)]"}>
+                Last verified: {lastVerified}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                {step.officialSource
+                  ? "Fees and timelines are set by state and local authorities and change; always confirm on the official page linked."
+                  : "Fees and timelines are set by state and local authorities and change; confirm them with the responsible authority before applying."}
+              </p>
+            </section>
             {step.deadline ? (
               <section className="border border-[var(--marigold)] bg-[var(--marigold-soft)] p-4">
                 <h2 className="font-mono text-xs font-bold uppercase tracking-wider">

@@ -31,6 +31,8 @@ const conditionalJourney: Journey = {
       sla: "14 days",
       whyPlain: "Financial support for eligible students.",
       whyPlain_te: "అర్హులైన విద్యార్థులకు ఆర్థిక సహాయం.",
+      officialSource: null,
+      lastVerified: "2026-08-28",
       documents: ["Birth certificate"],
       dependsOn: [],
       conditions: [{ questionId: "gender", equals: "girl" }],

@@ -13,6 +13,8 @@ function step(id: string, overrides: Partial<Step> = {}): Step {
     sla: "One day",
     whyPlain: "Required for testing",
     whyPlain_te: "పరీక్ష కోసం అవసరం",
+    officialSource: null,
+    lastVerified: "2026-08-28",
     documents: [],
     dependsOn: [],
     ...overrides,
