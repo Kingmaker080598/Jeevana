@@ -15,11 +15,26 @@ function SharedHeader() {
   const enableTelugu = isTeluguEnabled();
 
   return (
-    <header className="border-b border-[var(--line)] bg-[var(--paper)]">
+    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--paper)]/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" className="font-serif text-2xl font-bold tracking-tight text-[var(--ink)]">
+        <Link href="/" className="group inline-block font-serif text-2xl font-black tracking-tight text-[var(--leaf)]">
           Jeevana {enableTelugu ? <span className="text-[var(--marigold-dark)]">జీవన</span> : null}
+          <span
+            aria-hidden="true"
+            className="mt-0.5 block h-[3px] w-12 bg-[var(--marigold)] transition-[width] group-hover:w-full"
+          />
         </Link>
+        <nav aria-label="Sections" className="hidden items-center gap-6 lg:flex">
+          <Link href="/#journeys" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
+            Journeys
+          </Link>
+          <Link href="/#how-it-works" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
+            How it works
+          </Link>
+          <Link href="/#roadmap" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
+            Roadmap
+          </Link>
+        </nav>
         <div className="flex items-center gap-2">
           <span className="hidden border border-[var(--marigold)] bg-[var(--marigold-soft)] px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--ink)] sm:inline-block">
             DEMO — synthetic data, independent hackathon prototype

@@ -21,7 +21,8 @@ describe("HomeContent", () => {
       </LanguageProvider>,
     );
 
-    const links = screen.getAllByRole("link");
+    const journeysSection = screen.getByRole("region", { name: "Open now" });
+    const links = within(journeysSection).getAllByRole("link");
     expect(links).toHaveLength(3);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/journey/birth",
@@ -66,8 +67,11 @@ describe("HomeContent", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "After a birth or a death, no one tells you what comes next.",
+        name: "Life doesn't happen department by department.",
       }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/After a birth or a death, no one tells you what comes next\./),
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Open now" })).toBeInTheDocument();
     expect(

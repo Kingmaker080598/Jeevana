@@ -1,7 +1,25 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Archivo, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import "./globals.css";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+});
+
+const archivo = Archivo({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
   title: "Jeevana — Life events, in the order they happen",
@@ -21,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}>
       <body>
         <AppShell>{children}</AppShell>
       </body>
