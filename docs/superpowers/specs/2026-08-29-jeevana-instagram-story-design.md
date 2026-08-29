@@ -7,7 +7,7 @@ Create one Instagram Story that introduces Jeevana as a serious civic-design ide
 ## Format
 
 - One 9:16 Instagram Story at 1080 × 1920 pixels.
-- Preserve comfortable clear space at the top and bottom for Instagram interface controls.
+- Keep essential artwork between 250 and 1670 pixels vertically, leaving roughly 250 pixels clear at both the top and bottom for Instagram interface controls.
 - Use the existing Jeevana visual language: warm paper texture, deep green, marigold accent, black editorial serif headline, thin frame marks, and a dotted journey line.
 - Keep the page visually quiet: one hook, one explanatory sentence, one pilot label, one link sticker, and one acknowledgement.
 
@@ -25,8 +25,8 @@ Create one Instagram Story that introduces Jeevana as a serious civic-design ide
    > I built Jeevana to turn scattered portals into one guided path through life’s biggest administrative moments.
 
 6. Pilot label: `Built for India · Piloted in Andhra Pradesh`
-7. Instagram Link sticker labeled `Explore Jeevana ↗` and linked to `https://jeevana-brown.vercel.app/`.
-8. Closing acknowledgement:
+7. Reserved space for an Instagram Link sticker labeled `Explore Jeevana ↗` and linked to `https://jeevana-brown.vercel.app/`.
+8. Reserved space for this closing acknowledgement:
 
    > Thank you @thevarunmayya for the opportunity — and @openai for helping me bring it to life.
 
@@ -39,7 +39,14 @@ Create one Instagram Story that introduces Jeevana as a serious civic-design ide
 
 ## Interaction
 
-The only action is the Instagram Link sticker. Its visible label is `Explore Jeevana ↗`; its destination is the live Jeevana site. The mentions remain readable and tappable above Instagram’s bottom control area.
+The exported 1080 × 1920 artwork contains the background, frame marks, hackathon label, Jeevana wordmark, hook, dotted journey rule, supporting copy, and pilot label. It must not bake in a fake Link sticker or the tagged acknowledgement.
+
+After importing the artwork into Instagram, add these native overlays:
+
+1. Add Instagram’s Link sticker in the reserved lower area. Set its visible label to `Explore Jeevana ↗` and its destination to `https://jeevana-brown.vercel.app/`.
+2. Add the closing acknowledgement as native Instagram text below the Link sticker, using live mentions for `@thevarunmayya` and `@openai` so both accounts are actually tagged.
+
+Keep both native overlays above the 1670-pixel lower safe boundary. The Link sticker is the primary action; the mentions provide attribution and notifications.
 
 ## Success Criteria
 
