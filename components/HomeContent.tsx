@@ -87,11 +87,48 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
         </ol>
       </section>
 
+      <section className="mt-12" aria-labelledby="how-it-works-heading">
+        <div className="border-b border-[var(--line)] pb-3">
+          <h2 id="how-it-works-heading" className="font-serif text-2xl font-bold text-[var(--ink)] sm:text-3xl">
+            How Jeevana works
+          </h2>
+        </div>
+
+        <ol className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <li className="flex flex-col">
+            <span className="font-mono text-xs font-bold text-[var(--leaf)]">01</span>
+            <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Choose a life event</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">Start with what changed, not the department that owns a form.</p>
+          </li>
+
+          <li className="flex flex-col">
+            <span className="font-mono text-xs font-bold text-[var(--leaf)]">02</span>
+            <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Answer a few questions</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">See only the steps that match your situation.</p>
+          </li>
+
+          <li className="flex flex-col">
+            <span className="font-mono text-xs font-bold text-[var(--leaf)]">03</span>
+            <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Receive an ordered path</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">What to do first, what follows, and what is blocked.</p>
+          </li>
+
+          <li className="flex flex-col">
+            <span className="font-mono text-xs font-bold text-[var(--leaf)]">04</span>
+            <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Continue through official sources</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">Verified government pages for the actual service.</p>
+          </li>
+        </ol>
+      </section>
+
       <section className="mt-14" aria-labelledby="planned-heading">
         <div className="border-b border-[var(--line)] pb-3">
           <h2 id="planned-heading" className="font-serif text-2xl font-bold text-[var(--ink)] sm:text-3xl">
-            Thirteen more stages mapped, not yet built.
+            A roadmap for the whole of life
           </h2>
+          <p className="mt-3 max-w-3xl text-sm text-[var(--muted)]">
+            The pilot begins with three journeys. The same event-first model can make the rest of life&apos;s administrative moments easier to navigate.
+          </p>
         </div>
 
         <ol className="mt-4 grid gap-x-10 md:grid-cols-2">
@@ -101,22 +138,42 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
                 role="group"
                 aria-label={stage.title}
                 aria-disabled="true"
-                className="flex min-h-12 items-center gap-3 py-3 text-stone-500"
+                className="flex flex-col gap-3 py-4 text-stone-500"
               >
-                <span className="w-7 shrink-0 font-mono text-[10px] font-bold tracking-wider text-stone-400">
-                  {String(stage.order).padStart(2, "0")}
-                </span>
-                <span className="min-w-0 flex-1 truncate font-serif text-base font-bold sm:text-lg">
-                  {stage.title}
-                </span>
-                <span className="border border-[var(--line)] px-2 py-1 font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">
-                  Planned
-                </span>
+                <div className="flex items-start gap-3">
+                  <span className="w-7 shrink-0 font-mono text-[10px] font-bold tracking-wider text-stone-400">
+                    {String(stage.order).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-serif text-base font-bold text-[var(--ink)] sm:text-lg">{stage.title}</div>
+                    <div className="mt-1 text-sm text-[var(--muted)]">{stage.description}</div>
+                  </div>
+                  <span className="border border-[var(--line)] px-2 py-1 font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">
+                    Planned
+                  </span>
+                </div>
               </div>
             </li>
           ))}
         </ol>
       </section>
+
+      <section className="mt-12" aria-labelledby="why-heading">
+        <div className="border-b border-[var(--line)] pb-3">
+          <h2 id="why-heading" className="font-serif text-2xl font-bold text-[var(--ink)] sm:text-3xl">
+            Why Jeevana
+          </h2>
+        </div>
+        <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)]">
+          Government services are published by department. People experience them as a sequence. Jeevana does not replace official portals. It supplies the connective tissue: what comes first, what depends on it, and where to continue officially.
+        </p>
+      </section>
+
+      <footer className="mt-12 border-t border-[var(--line)] pt-6">
+        <p className="max-w-3xl text-sm text-[var(--muted)]">
+          Jeevana is an independent demonstration, not an official government service. Requirements, fees, and timelines can change; always confirm details through the official sources linked inside each journey.
+        </p>
+      </footer>
     </main>
   );
 }

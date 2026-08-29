@@ -51,7 +51,7 @@ describe("HomeContent", () => {
       expect(row).not.toHaveAttribute("tabindex");
       expect(within(row).queryByRole("link")).not.toBeInTheDocument();
       expect(within(row).getByText("Planned")).toBeInTheDocument();
-      expect(within(row).queryByText(stage.description)).not.toBeInTheDocument();
+      expect(within(row).getByText(stage.description)).toBeInTheDocument();
     }
   });
 
@@ -73,9 +73,10 @@ describe("HomeContent", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Thirteen more stages mapped, not yet built.",
+        name: "A roadmap for the whole of life",
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText("The pilot begins with three journeys. The same event-first model can make the rest of life\'s administrative moments easier to navigate.")).toBeInTheDocument();
 
     expect(screen.getByText("8")).toBeInTheDocument();
     expect(screen.getByText("Steps")).toBeInTheDocument();

@@ -4,9 +4,19 @@ import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Jeevana",
+  title: "Jeevana — Life events, in the order they happen",
   description:
-    "After a birth or a death, no one tells you what comes next. A sequence layer for Indian public services. Built for India, piloted in Andhra Pradesh.",
+    "Jeevana turns scattered government services into one clear path through life's major events. Built for India, piloted in Andhra Pradesh.",
+  openGraph: {
+    title: "Jeevana — Life events, in the order they happen",
+    description:
+      "Jeevana turns scattered government services into one clear path through life's major events. Built for India, piloted in Andhra Pradesh.",
+  },
+  twitter: {
+    title: "Jeevana — Life events, in the order they happen",
+    description:
+      "Jeevana turns scattered government services into one clear path through life's major events. Built for India, piloted in Andhra Pradesh.",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
