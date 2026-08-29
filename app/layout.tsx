@@ -32,6 +32,7 @@ export const metadata: Metadata = {
       "Jeevana turns scattered government services into one clear path through life's major events. Built for India, piloted in Andhra Pradesh.",
   },
   twitter: {
+    card: "summary_large_image",
     title: "Jeevana — Life events, in the order they happen",
     description:
       "Jeevana turns scattered government services into one clear path through life's major events. Built for India, piloted in Andhra Pradesh.",
