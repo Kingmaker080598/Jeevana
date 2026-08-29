@@ -33,7 +33,6 @@ function FrameMark({ position }: Readonly<{ position: "tl" | "tr" | "bl" | "br" 
 
 export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
   const liveStages = stages.filter((stage) => stage.status === "live");
-  const plannedStages = stages.filter((stage) => stage.status === "planned");
 
   return (
     <main className="relative">
@@ -233,28 +232,87 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
             </p>
           </div>
 
-          <ol className="mt-4 grid gap-x-10 md:grid-cols-2">
-            {plannedStages.map((stage) => (
-              <li key={stage.id} className="border-b border-[var(--line)]">
-                <div
-                  role="group"
-                  aria-label={stage.title}
-                  aria-disabled="true"
-                  className="flex flex-col gap-3 py-4 text-stone-500"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="w-7 shrink-0 font-mono text-[10px] font-bold tracking-wider text-stone-400">
-                      {String(stage.order).padStart(2, "0")}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-serif text-base font-bold text-[var(--ink)] sm:text-lg">{stage.title}</div>
-                      <div className="mt-1 text-sm text-[var(--muted)]">{stage.description}</div>
-                    </div>
-                    <span className="border border-[var(--line)] px-2 py-1 font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">
-                      Planned
-                    </span>
-                  </div>
-                </div>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-4 w-4 rounded-full bg-[var(--leaf)]" /> Open now
+            </span>
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-4 w-4 rounded-full border-2 border-dashed border-[var(--line)] bg-white" /> Planned
+            </span>
+          </div>
+
+          <ol className="mt-6 grid gap-x-14 gap-y-7 lg:grid-cols-2">
+            {[stages.slice(0, 8), stages.slice(8)].map((column, columnIndex) => (
+              <li key={columnIndex} className="list-none">
+                <ol>
+                  {column.map((stage, rowIndex) => {
+                    const isLive = stage.status === "live";
+                    const isLastStop = stage.order === stages.length;
+                    const isColumnEnd = rowIndex === column.length - 1;
+                    const node = (
+                      <span
+                        aria-hidden="true"
+                        className={`absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full font-serif text-base font-bold transition-transform ${
+                          isLive
+                            ? isLastStop
+                              ? "bg-[var(--marigold)] text-white shadow-[2px_2px_0_var(--leaf)] group-hover:-translate-y-0.5"
+                              : "bg-[var(--leaf)] text-white shadow-[2px_2px_0_var(--marigold)] group-hover:-translate-y-0.5"
+                            : "border-2 border-dashed border-[var(--line)] bg-white text-[var(--muted)]"
+                        }`}
+                      >
+                        {stage.order}
+                      </span>
+                    );
+                    const spine = !isColumnEnd && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute bottom-0 left-5 top-11 -ml-px border-l-2 border-dotted border-[var(--line)]"
+                      />
+                    );
+
+                    if (isLive) {
+                      return (
+                        <li key={stage.id} className="relative pb-7 pl-14 last:pb-0">
+                          {spine}
+                          <Link
+                            href={`/journey/${stage.journeyId}`}
+                            className="group block focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2"
+                          >
+                            {node}
+                            <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                              <span className="font-serif text-lg font-bold text-[var(--ink)] underline decoration-[var(--marigold)] decoration-2 underline-offset-4">
+                                {stage.title}
+                              </span>
+                              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--leaf)]">
+                                Open journey{" "}
+                                <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">
+                                  →
+                                </span>
+                              </span>
+                            </span>
+                            <span className="mt-1 block text-sm leading-6 text-[var(--muted)]">{stage.description}</span>
+                          </Link>
+                        </li>
+                      );
+                    }
+
+                    return (
+                      <li key={stage.id} className="relative pb-7 pl-14 last:pb-0">
+                        {spine}
+                        <div role="group" aria-label={stage.title} aria-disabled="true">
+                          {node}
+                          <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                            <span className="font-serif text-lg font-bold text-[var(--ink)]">{stage.title}</span>
+                            <span className="border border-[var(--line)] px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">
+                              Planned
+                            </span>
+                          </span>
+                          <span className="mt-1 block text-sm leading-6 text-[var(--muted)]">{stage.description}</span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
               </li>
             ))}
           </ol>

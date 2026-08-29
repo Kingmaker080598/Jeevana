@@ -82,13 +82,16 @@ describe("HomeContent", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("The pilot begins with three journeys. The same event-first model can make the rest of life\'s administrative moments easier to navigate.")).toBeInTheDocument();
 
-    expect(screen.getByText("8")).toBeInTheDocument();
-    expect(screen.getByText("Steps")).toBeInTheDocument();
-    expect(screen.getByText("7")).toBeInTheDocument();
-    expect(screen.getByText("Departments involved")).toBeInTheDocument();
-    expect(screen.getByText("6")).toBeInTheDocument();
-    expect(screen.getByText("Separate portals")).toBeInTheDocument();
-    expect(screen.getByText("0")).toBeInTheDocument();
-    expect(screen.getByText("Places the sequence is documented")).toBeInTheDocument();
+    const evidence = within(
+      screen.getByRole("region", { name: "Evidence from the death journey" }),
+    );
+    expect(evidence.getByText("8")).toBeInTheDocument();
+    expect(evidence.getByText("Steps")).toBeInTheDocument();
+    expect(evidence.getByText("7")).toBeInTheDocument();
+    expect(evidence.getByText("Departments involved")).toBeInTheDocument();
+    expect(evidence.getByText("6")).toBeInTheDocument();
+    expect(evidence.getByText("Separate portals")).toBeInTheDocument();
+    expect(evidence.getByText("0")).toBeInTheDocument();
+    expect(evidence.getByText("Places the sequence is documented")).toBeInTheDocument();
   });
 });
