@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Archivo, Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Playfair_Display, Poppins } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-display",
 });
 
-const archivo = Archivo({
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
 });
 
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${poppins.variable} ${plexMono.variable}`}>
       <body>
         <AppShell>{children}</AppShell>
       </body>

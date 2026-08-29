@@ -46,31 +46,49 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
             <FrameMark position="bl" />
             <FrameMark position="br" />
 
-            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
-              <div>
+            <div className="relative">
+              <JourneyPathArt className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-auto lg:block" />
+
+              <div className="relative z-10">
                 <p
-                  className="rise-in font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--leaf)]"
+                  className="rise-in font-serif text-4xl font-bold tracking-tight text-[var(--leaf)] sm:text-5xl"
                   style={{ animationDelay: "0.05s" }}
                 >
-                  Built for India. Piloted in Andhra Pradesh.
+                  Jeevana
                 </p>
+                <span
+                  aria-hidden="true"
+                  className="rise-in mt-3 block h-1 w-28 bg-[var(--marigold)]"
+                  style={{ animationDelay: "0.1s" }}
+                />
 
                 <h1
                   id="hero-heading"
-                  className="rise-in mt-4 font-serif text-[2.35rem] font-black leading-[1.04] tracking-tight text-[var(--ink)] sm:text-6xl lg:text-[4.4rem]"
+                  className="rise-in mt-8 max-w-4xl font-serif text-[2.35rem] font-bold leading-[1.08] tracking-tight text-[var(--ink)] sm:text-6xl lg:text-[4rem]"
                   style={{ animationDelay: "0.15s" }}
                 >
-                  Life doesn&apos;t happen department by department.
+                  Life doesn&apos;t happen{" "}
+                  <br className="hidden lg:block" aria-hidden="true" />
+                  department by department.
                 </h1>
 
                 <div
                   aria-hidden="true"
-                  className="hero-rule mt-6 h-0 max-w-xl border-t-2 border-dotted border-[var(--marigold)]"
-                />
+                  className="hero-rule relative mt-8 h-0 max-w-2xl border-t border-dotted border-[var(--marigold)]"
+                >
+                  <span className="absolute -left-1 -top-[4.5px] h-2 w-2 rounded-full bg-[var(--marigold)]" />
+                </div>
 
                 <p
-                  className="rise-in mt-6 max-w-xl text-base leading-7 text-[var(--muted)] sm:text-lg"
-                  style={{ animationDelay: "0.3s" }}
+                  className="rise-in mt-6 font-sans text-lg font-medium text-[var(--leaf)] sm:text-xl"
+                  style={{ animationDelay: "0.25s" }}
+                >
+                  Built for India. Piloted in Andhra Pradesh.
+                </p>
+
+                <p
+                  className="rise-in mt-4 max-w-xl text-base leading-7 text-[var(--muted)]"
+                  style={{ animationDelay: "0.35s" }}
                 >
                   After a birth or a death, no one tells you what comes next. Government portals
                   exist for each department, but nothing publishes the order. Jeevana turns
@@ -92,8 +110,6 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
                   </a>
                 </div>
               </div>
-
-              <JourneyPathArt className="mx-auto hidden w-full max-w-sm lg:block" />
             </div>
           </div>
         </div>
