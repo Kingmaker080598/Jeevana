@@ -26,15 +26,24 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
   return (
     <main className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6 sm:pb-20 sm:pt-10">
       <section className="max-w-5xl border-l-8 border-[var(--marigold)] pl-5 sm:pl-8">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--leaf)]">
-          Built for India. Piloted in Andhra Pradesh.
-        </p>
-        <h1 className="mt-3 max-w-5xl font-serif text-4xl font-bold leading-[1.04] tracking-tight text-[var(--ink)] sm:text-5xl lg:text-6xl">
-          After a birth or a death, no one tells you what comes next.
-        </h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-          Government portals exist for each department, but nothing publishes the order. People rely on relatives, agents, and search.
-        </p>
+        <div className="relative">
+          <img
+            src="/jeevana-social-preview-candidate.png"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute right-0 top-0 hidden lg:block w-[560px] max-w-[45%] object-contain"
+          />
+
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--leaf)]">
+            Built for India. Piloted in Andhra Pradesh.
+          </p>
+          <h1 className="mt-3 max-w-5xl font-serif text-4xl font-bold leading-[1.04] tracking-tight text-[var(--ink)] sm:text-5xl lg:text-6xl">
+            After a birth or a death, no one tells you what comes next.
+          </h1>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg">
+            Government portals exist for each department, but nothing publishes the order. People rely on relatives, agents, and search.
+          </p>
+        </div>
       </section>
 
       <section className="mt-7 border-y border-[var(--line)]" aria-label="Evidence from the death journey">
