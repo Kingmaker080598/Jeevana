@@ -109,6 +109,8 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
                     See the roadmap
                   </a>
                 </div>
+
+                <JourneyPathArt className="mx-auto mt-10 h-64 w-auto sm:h-72 lg:hidden" />
               </div>
             </div>
           </div>

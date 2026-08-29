@@ -17,12 +17,18 @@ function SharedHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--paper)]/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" className="group inline-block font-serif text-2xl font-black tracking-tight text-[var(--leaf)]">
-          Jeevana {enableTelugu ? <span className="text-[var(--marigold-dark)]">జీవన</span> : null}
+        <Link
+          href="/"
+          aria-label="Jeevana — home"
+          className="group flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2"
+        >
           <span
             aria-hidden="true"
-            className="mt-0.5 block h-[3px] w-12 bg-[var(--marigold)] transition-[width] group-hover:w-full"
-          />
+            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[var(--leaf)] bg-[var(--leaf)] font-serif text-xl font-bold text-[var(--paper)] shadow-[2px_2px_0_var(--marigold)] transition-[transform,box-shadow] group-hover:-translate-y-0.5 group-hover:shadow-[3px_3px_0_var(--marigold)]"
+          >
+            J
+          </span>
+          {enableTelugu ? <span className="font-serif text-lg font-bold text-[var(--marigold-dark)]">జీవన</span> : null}
         </Link>
         <nav aria-label="Sections" className="hidden items-center gap-6 lg:flex">
           <Link href="/#journeys" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
