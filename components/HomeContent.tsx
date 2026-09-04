@@ -318,6 +318,34 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
           </ol>
         </section>
 
+        {/* ——— Planned: SMS access (concept preview) ——— */}
+        <section id="sms-preview" className="mt-10 scroll-mt-24" aria-labelledby="sms-preview-heading">
+          <Link
+            href="/sms-demo"
+            className="group flex flex-col gap-4 border border-dashed border-[var(--ink)] bg-white p-5 transition-colors hover:bg-[var(--marigold-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <span className="flex flex-col gap-1">
+              <span className="flex flex-wrap items-center gap-2">
+                <span id="sms-preview-heading" className="font-serif text-lg font-bold text-[var(--ink)]">
+                  Jeevana over SMS
+                </span>
+                <span className="border border-[var(--line)] px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">
+                  Planned · Concept preview
+                </span>
+              </span>
+              <span className="text-sm leading-6 text-[var(--muted)]">
+                The same ordered steps, delivered one text at a time for people without a smartphone or data.
+              </span>
+            </span>
+            <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--leaf)]">
+              See the mockup{" "}
+              <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </span>
+          </Link>
+        </section>
+
         {/* ——— Why ——— */}
         <section id="why" className="mt-12 scroll-mt-24" aria-labelledby="why-heading">
           <div className="border-b border-[var(--line)] pb-3">
