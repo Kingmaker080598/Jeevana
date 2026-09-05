@@ -1,0 +1,7 @@
+"use client";
+
+import { LifeMap } from "./LifeMap";
+
+export function LifeMapPage() {
+  return <main className="mx-auto max-w-[88rem] px-4 pb-16 pt-6 sm:px-6 sm:pt-8"><div role="note" className="flex items-start gap-3 border-2 border-dashed border-[var(--marigold-dark)] bg-[var(--marigold-soft)] px-4 py-3"><span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--marigold-dark)] font-serif text-sm font-bold text-white">!</span><p className="font-mono text-[10px] font-bold uppercase leading-5 tracking-[0.1em]">Preview — dependency data across the 13 planned stages is a first draft. Confirm at the office. Concept only — not live.</p></div><header className="mt-8 grid gap-4 border-b-2 border-[var(--ink)] pb-6 lg:grid-cols-[1fr_auto] lg:items-end"><div><p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--marigold-dark)]">Jeevana · Household view</p><h1 className="mt-2 font-serif text-4xl font-bold tracking-tight sm:text-5xl">Household Life Map</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted)]">Describe the family once. See what each person missed, what it blocks, the one paper to fix first, and what is coming in the next two years.</p></div><p className="max-w-sm border-l-4 border-[var(--leaf)] pl-3 text-xs leading-5 text-[var(--muted)]"><strong className="text-[var(--ink)]">Private by design.</strong> Nothing leaves this browser. Your household is stored only on this device.</p></header><div className="mt-6"><LifeMap /></div></main>;
+}
