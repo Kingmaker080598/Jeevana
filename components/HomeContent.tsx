@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { LifeStage } from "@/data/lifeStages";
 import type { JourneyEvidence } from "@/lib/journey/evidence";
 import { JourneyPathArt } from "./JourneyPathArt";
+import { LifeMap } from "./LifeMap";
+import { VerifiedSmsMock } from "./VerifiedSmsMock";
 
 interface HomeContentProps {
   stages: readonly LifeStage[];
@@ -79,16 +81,17 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
                 </div>
 
                 <p
-                  className="rise-in mt-6 font-sans text-lg font-medium text-[var(--leaf)] sm:text-xl"
+                  className="rise-in mt-6 max-w-3xl font-serif text-2xl font-bold leading-snug text-[var(--leaf)] sm:text-3xl"
                   style={{ animationDelay: "0.25s" }}
                 >
-                  Built for India. Piloted in Andhra Pradesh.
+                  Jeevana tells you what to do next, what you missed, and what&apos;s coming.
                 </p>
 
                 <p
                   className="rise-in mt-4 max-w-xl text-base leading-7 text-[var(--muted)]"
                   style={{ animationDelay: "0.35s" }}
                 >
+                  <strong className="mb-2 block font-medium text-[var(--leaf)]">Built for India. Piloted in Andhra Pradesh.</strong>
                   After a birth or a death, no one tells you what comes next. Government portals
                   exist for each department, but nothing publishes the order. Jeevana turns
                   scattered services into one guided path.
@@ -101,12 +104,12 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
                   >
                     Start a journey <span aria-hidden="true">↓</span>
                   </a>
-                  <a
-                    href="#roadmap"
+                  <Link
+                    href="/life-map"
                     className="inline-flex min-h-12 items-center border-2 border-[var(--ink)] bg-transparent px-6 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[var(--ink)] transition-colors hover:bg-[var(--ink)] hover:text-white focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2"
                   >
-                    See the roadmap
-                  </a>
+                    Map your household
+                  </Link>
                 </div>
 
                 <JourneyPathArt className="mx-auto mt-10 h-64 w-auto sm:h-72 lg:hidden" />
@@ -186,6 +189,38 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
           </ol>
         </section>
 
+        {/* ——— Household Life Map ——— */}
+        <section id="life-map-preview" className="mt-16 scroll-mt-24" aria-labelledby="life-map-preview-heading">
+          <div className="grid gap-7 lg:grid-cols-[minmax(16rem,0.58fr)_minmax(0,1.42fr)] lg:items-start">
+            <div className="lg:sticky lg:top-24">
+              <span className="inline-block bg-[var(--marigold)] px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--ink)]">New</span>
+              <h2 id="life-map-preview-heading" className="mt-4 font-serif text-3xl font-bold leading-tight sm:text-4xl">One map for the whole household</h2>
+              <span aria-hidden="true" className="mt-4 block h-1 w-20 bg-[var(--marigold)]" />
+              <p className="mt-5 text-sm leading-7 text-[var(--muted)]">Describe your household once. Jeevana maps all 16 life stages for each person, showing what is done, blocked, coming up, or still far away.</p>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">It then finds the one missing paper that unlocks the most — and turns the next actions into a bilingual card you can print.</p>
+              <Link href="/life-map" className="mt-6 inline-flex min-h-11 items-center border-2 border-[var(--ink)] bg-[var(--ink)] px-5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-[4px_4px_0_var(--marigold)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_var(--marigold)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">Open the Life Map <span aria-hidden="true" className="ml-2">→</span></Link>
+            </div>
+            <div className="min-w-0 border border-[var(--ink)] bg-[var(--paper)] p-2 shadow-[6px_6px_0_var(--marigold)] sm:p-4">
+              <p className="mb-2 text-center font-mono text-[8px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">Sample family · Concept, not live</p>
+              <LifeMap readOnly compact />
+            </div>
+          </div>
+        </section>
+
+        {/* ——— Multi-channel delivery ——— */}
+        <section id="reach" className="mt-16 border-y border-[var(--line)] py-12" aria-labelledby="reach-heading">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-center">
+            <div>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--marigold-dark)]">One engine · many ways to reach people</p>
+              <h2 id="reach-heading" className="mt-3 max-w-xl font-serif text-3xl font-bold leading-tight sm:text-4xl">Jeevana reaches you where you are</h2>
+              <span aria-hidden="true" className="mt-4 block h-1 w-20 bg-[var(--marigold)]" />
+              <p className="mt-5 max-w-xl text-base leading-7 text-[var(--muted)]">The same dependency engine can deliver an ordered path on a screen, on paper, or one plain text message at a time. A smartphone should never be the price of knowing what comes next.</p>
+              <Link href="/sms-demo" className="mt-6 inline-flex font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--leaf)] underline decoration-[var(--marigold)] decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">Try the interactive SMS preview <span aria-hidden="true" className="ml-2">→</span></Link>
+            </div>
+            <div className="mx-auto w-full max-w-sm"><VerifiedSmsMock compact /><div className="mt-5 flex flex-wrap justify-center gap-2"><span className="border border-[var(--line)] bg-white px-2.5 py-1 font-mono text-[8px] font-bold uppercase tracking-wider">SMS · planned</span><span className="border border-[var(--line)] bg-white px-2.5 py-1 font-mono text-[8px] font-bold uppercase tracking-wider">WhatsApp · planned</span><span className="border border-[var(--line)] bg-white px-2.5 py-1 font-mono text-[8px] font-bold uppercase tracking-wider">Printable card · in the Life Map</span></div></div>
+          </div>
+        </section>
+
         {/* ——— How it works ——— */}
         <section id="how-it-works" className="mt-14 scroll-mt-24" aria-labelledby="how-it-works-heading">
           <div className="border-b border-[var(--line)] pb-3">
@@ -197,26 +232,26 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
           <ol className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <li className="flex flex-col">
               <span className="font-mono text-xs font-bold text-[var(--leaf)]">01</span>
-              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Choose a life event</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">Start with what changed, not the department that owns a form.</p>
+              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Choose an event or household</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Choose a life event or describe the people who share your home.</p>
             </li>
 
             <li className="flex flex-col">
               <span className="font-mono text-xs font-bold text-[var(--leaf)]">02</span>
-              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Answer a few questions</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">See only the steps that match your situation.</p>
+              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Tell us what you hold</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Answer a few questions or tick the papers already in your folder.</p>
             </li>
 
             <li className="flex flex-col">
               <span className="font-mono text-xs font-bold text-[var(--leaf)]">03</span>
-              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Receive an ordered path</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">What to do first, what follows, and what is blocked.</p>
+              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Get the order</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Receive an ordered path, what is blocked, and the one thing to fix first.</p>
             </li>
 
             <li className="flex flex-col">
               <span className="font-mono text-xs font-bold text-[var(--leaf)]">04</span>
-              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Continue through official sources</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">Verified government pages for the actual service.</p>
+              <h3 className="mt-2 font-serif text-lg font-bold text-[var(--ink)]">Continue officially</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Continue through official sources for the actual service.</p>
             </li>
           </ol>
         </section>
@@ -316,34 +351,6 @@ export function HomeContent({ stages, evidence }: Readonly<HomeContentProps>) {
               </li>
             ))}
           </ol>
-        </section>
-
-        {/* ——— Planned: SMS access (concept preview) ——— */}
-        <section id="sms-preview" className="mt-10 scroll-mt-24" aria-labelledby="sms-preview-heading">
-          <Link
-            href="/sms-demo"
-            className="group flex flex-col gap-4 border border-dashed border-[var(--ink)] bg-white p-5 transition-colors hover:bg-[var(--marigold-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <span className="flex flex-col gap-1">
-              <span className="flex flex-wrap items-center gap-2">
-                <span id="sms-preview-heading" className="font-serif text-lg font-bold text-[var(--ink)]">
-                  Jeevana over SMS
-                </span>
-                <span className="border border-[var(--line)] px-1.5 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">
-                  Planned · Concept preview
-                </span>
-              </span>
-              <span className="text-sm leading-6 text-[var(--muted)]">
-                The same ordered steps, delivered one text at a time for people without a smartphone or data.
-              </span>
-            </span>
-            <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--leaf)]">
-              See the mockup{" "}
-              <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </span>
-          </Link>
         </section>
 
         {/* ——— Why ——— */}

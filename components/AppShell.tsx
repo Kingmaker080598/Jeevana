@@ -31,13 +31,16 @@ function SharedHeader() {
           {enableTelugu ? <span className="font-serif text-lg font-bold text-[var(--marigold-dark)]">జీవన</span> : null}
         </Link>
         <nav aria-label="Sections" className="hidden items-center gap-6 lg:flex">
-          <Link href="/#journeys" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
+          <Link href="/life-map" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">
+            Life Map
+          </Link>
+          <Link href="/#journeys" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">
             Journeys
           </Link>
-          <Link href="/#how-it-works" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
+          <Link href="/#how-it-works" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">
             How it works
           </Link>
-          <Link href="/#roadmap" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)]">
+          <Link href="/#roadmap" className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">
             Roadmap
           </Link>
         </nav>

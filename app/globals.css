@@ -77,7 +77,7 @@ a {
 /* --- Hero entrance choreography --- */
 @keyframes rise-in {
   from {
-    opacity: 0;
+    opacity: 1;
     transform: translateY(14px);
   }
   to {
@@ -131,7 +131,7 @@ a {
 }
 
 .rise-in {
-  opacity: 0;
+  opacity: 1;
   animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 

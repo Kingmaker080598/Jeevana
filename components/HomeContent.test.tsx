@@ -70,6 +70,13 @@ describe("HomeContent", () => {
         name: "Life doesn't happen department by department.",
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText("Jeevana tells you what to do next, what you missed, and what's coming.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Map your household" })).toHaveAttribute("href", "/life-map");
+    expect(screen.getByRole("heading", { level: 2, name: "One map for the whole household" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Open the Life Map/ })).toHaveAttribute("href", "/life-map");
+    expect(screen.getByRole("heading", { level: 2, name: "Jeevana reaches you where you are" })).toBeInTheDocument();
+    expect(screen.getByText("JD-JEEVNA")).toBeInTheDocument();
+    expect(screen.getByText("SMS · planned")).toBeInTheDocument();
     expect(
       screen.getByText(/After a birth or a death, no one tells you what comes next\./),
     ).toBeInTheDocument();

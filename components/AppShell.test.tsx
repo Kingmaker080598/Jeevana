@@ -21,5 +21,6 @@ describe("AppShell", () => {
     expect(screen.queryByRole("button", { name: /Switch to Telugu/ })).not.toBeInTheDocument();
     expect(screen.queryByText("జీవన")).not.toBeInTheDocument();
     expect(screen.getByText("Citizen content")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Life Map" })).toHaveAttribute("href", "/life-map");
   });
 });
