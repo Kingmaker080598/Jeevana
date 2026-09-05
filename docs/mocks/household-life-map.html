@@ -1,0 +1,435 @@
+<title>Household Life Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Poppins:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --paper: #f6f1e6; --panel: #ffffff; --ink: #17201d; --muted: #5f6762; --line: #c9c5b9;
+    --marigold: #e5a719; --marigold-dark: #9a6500; --marigold-soft: #fff0bd;
+    --leaf: #23634d; --leaf-soft: #e3efe8; --brick: #b0432b; --brick-soft: #f7e3dd;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #141c19; --panel: #1c2622; --ink: #efe9db; --muted: #a4ada7; --line: #3a463f;
+      --marigold: #e5a719; --marigold-dark: #f0c04a; --marigold-soft: #3a2e0e;
+      --leaf: #57a985; --leaf-soft: #1e3a2e; --brick: #e07a5f; --brick-soft: #3e231b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #141c19; --panel: #1c2622; --ink: #efe9db; --muted: #a4ada7; --line: #3a463f;
+    --marigold: #e5a719; --marigold-dark: #f0c04a; --marigold-soft: #3a2e0e;
+    --leaf: #57a985; --leaf-soft: #1e3a2e; --brick: #e07a5f; --brick-soft: #3e231b;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Poppins", system-ui, sans-serif; font-size: 14px; line-height: 1.55; }
+  h1, h2, h3 { font-family: "Playfair Display", Georgia, serif; margin: 0; text-wrap: balance; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .label { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--marigold); outline-offset: 2px; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 20px 20px 60px; }
+
+  .notice { display: flex; gap: 12px; align-items: flex-start; border: 2px dashed var(--marigold-dark); background: var(--marigold-soft); padding: 10px 14px; margin-bottom: 22px; }
+  .notice .bang { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--marigold-dark); color: #fff; font-family: "Playfair Display", serif; font-weight: 700; font-size: 13px; display: grid; place-items: center; }
+  .notice p { margin: 0; font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; border-bottom: 2px solid var(--ink); padding-bottom: 14px; }
+  header.top h1 { font-size: 40px; line-height: 1.05; }
+  header.top .sub { max-width: 60ch; color: var(--muted); margin: 8px 0 0; }
+  .rule { display: block; width: 90px; height: 4px; background: var(--marigold); margin-top: 12px; }
+
+  .summary { display: flex; border: 1px solid var(--line); background: var(--panel); }
+  .summary div { padding: 10px 18px; border-right: 1px solid var(--line); min-width: 120px; }
+  .summary div:last-child { border-right: 0; }
+  .summary b { display: block; font-family: "Playfair Display", serif; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .summary b.red { color: var(--brick); }
+  .summary b.gold { color: var(--marigold-dark); }
+
+  .grid { display: grid; grid-template-columns: 300px minmax(0, 1fr) 320px; gap: 22px; margin-top: 22px; align-items: start; }
+  @media (max-width: 1060px) { .grid { grid-template-columns: 300px minmax(0,1fr); } .col-right { grid-column: 1 / -1; } }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); }
+  .panel-hd { display: flex; align-items: baseline; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .panel-hd h2 { font-size: 18px; }
+  .panel-bd { padding: 14px 16px; }
+
+  .members { display: flex; flex-direction: column; gap: 6px; }
+  .member { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; text-align: left; padding: 8px 10px; border: 1px solid var(--line); background: transparent; width: 100%; }
+  .member.active { border-color: var(--ink); box-shadow: 3px 3px 0 var(--marigold); }
+  .member .avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: "Playfair Display", serif; font-weight: 700; color: #fff; background: var(--leaf); }
+  .member .name { font-weight: 600; }
+  .member .age { color: var(--muted); font-size: 12px; }
+  .member .flag { font-family: "IBM Plex Mono", monospace; font-size: 10px; font-weight: 600; padding: 2px 6px; border: 1px solid var(--line); white-space: nowrap; }
+  .member .flag.red { color: var(--brick); border-color: var(--brick); }
+  .member .flag.gold { color: var(--marigold-dark); border-color: var(--marigold); }
+  .member .flag.green { color: var(--leaf); border-color: var(--leaf); }
+
+  .docs { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+  .doc { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px; padding: 6px 8px; border: 1px solid transparent; background: transparent; width: 100%; text-align: left; }
+  .doc:hover { border-color: var(--line); }
+  .doc .box { width: 22px; height: 22px; border: 2px solid var(--ink); display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+  .doc[data-state="have"] .box { background: var(--leaf); border-color: var(--leaf); color: #fff; }
+  .doc[data-state="unsure"] .box { border-style: dashed; color: var(--muted); }
+  .doc[data-state="no"] .box { border-color: var(--brick); }
+  .doc .t { font-size: 13px; }
+  .doc .te { display: block; color: var(--muted); font-size: 11px; }
+  .doc .st { font-family: "IBM Plex Mono", monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .doc[data-state="no"] .st { color: var(--brick); }
+  .hint { margin: 12px 0 0; padding: 8px 10px; background: var(--marigold-soft); border-left: 3px solid var(--marigold); font-size: 12px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .dot.done { background: var(--leaf); }
+  .dot.ready { background: var(--panel); border: 2px solid var(--leaf); }
+  .dot.blocked { background: var(--brick); }
+  .dot.upcoming { background: var(--marigold); }
+  .dot.past { background: var(--panel); border: 2px dashed var(--line); }
+
+  .map { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+  @media (max-width: 560px) { .map { grid-template-columns: 1fr; } }
+  .stop { position: relative; padding: 0 0 18px 52px; min-height: 58px; }
+  .stop::before { content: ""; position: absolute; left: 17px; top: 38px; bottom: 0; border-left: 2px dotted var(--line); }
+  .stop:last-child::before, .stop.col-end::before { display: none; }
+  .node { position: absolute; left: 0; top: 0; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-family: "Playfair Display", serif; font-weight: 700; font-size: 15px; }
+  .stop[data-s="done"] .node { background: var(--leaf); color: #fff; box-shadow: 2px 2px 0 var(--marigold); }
+  .stop[data-s="ready"] .node { background: var(--panel); color: var(--leaf); border: 2px solid var(--leaf); }
+  .stop[data-s="blocked"] .node { background: var(--brick); color: #fff; box-shadow: 2px 2px 0 var(--ink); }
+  .stop[data-s="upcoming"] .node { background: var(--marigold); color: #17201d; box-shadow: 2px 2px 0 var(--leaf); }
+  .stop[data-s="past"] .node, .stop[data-s="future"] .node { background: var(--panel); color: var(--muted); border: 2px dashed var(--line); }
+  .stop .title { font-family: "Playfair Display", serif; font-weight: 700; font-size: 16px; }
+  .stop[data-s="past"] .title, .stop[data-s="future"] .title { color: var(--muted); }
+  .stop .why { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+  .stop[data-s="blocked"] .why { color: var(--brick); }
+  .stop[data-s="upcoming"] .why { color: var(--marigold-dark); }
+  .stop .why b { font-weight: 600; }
+  .pulse { animation: pulse .5s ease-out; }
+  @keyframes pulse { 0% { transform: scale(.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+
+  .first { border: 2px solid var(--ink); background: var(--panel); box-shadow: 5px 5px 0 var(--marigold); }
+  .first .panel-hd { border-bottom: 3px solid var(--marigold); }
+  .first h3 { font-size: 22px; line-height: 1.15; margin-top: 4px; }
+  .first .te { color: var(--muted); font-size: 13px; display: block; margin-top: 2px; font-family: "Poppins", sans-serif; font-weight: 400; }
+  .first p { margin: 8px 0 0; }
+  .kv { display: grid; grid-template-columns: 82px 1fr; gap: 6px 10px; margin: 12px 0 0; font-size: 13px; }
+  .kv dt { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .kv dd { margin: 0; }
+  .unblocks { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+  .unblocks span { font-family: "IBM Plex Mono", monospace; font-size: 10px; padding: 2px 6px; border: 1px solid var(--leaf); color: var(--leaf); }
+
+  .coming { margin-top: 18px; }
+  .coming ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .coming li { padding: 10px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 58px 1fr; gap: 10px; }
+  .coming li:first-child { border-top: 0; padding-top: 0; }
+  .coming .when { font-family: "Playfair Display", serif; font-weight: 900; font-size: 22px; line-height: 1; color: var(--marigold-dark); font-variant-numeric: tabular-nums; }
+  .coming .when small { display: block; font-family: "IBM Plex Mono", monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 3px; }
+  .coming .when.red { color: var(--brick); }
+  .coming .what { font-size: 13px; }
+  .coming .what b { display: block; font-weight: 600; }
+
+  .card { margin-top: 18px; border: 1px solid var(--line); background: var(--panel); padding: 16px; position: relative; }
+  .card::after { content: ""; position: absolute; inset: 6px; border: 1px solid var(--line); pointer-events: none; }
+  .card .brand { display: flex; align-items: center; gap: 8px; }
+  .card .j { width: 26px; height: 26px; border-radius: 50%; background: var(--leaf); color: #fff; display: grid; place-items: center; font-family: "Playfair Display", serif; font-weight: 700; font-size: 14px; }
+  .card h3 { font-size: 20px; margin-top: 10px; }
+  .card ol { margin: 10px 0 0; padding-left: 20px; font-size: 13px; }
+  .card li { margin-bottom: 6px; }
+  .card li small { display: block; color: var(--muted); }
+  .card .tick { display: inline-block; width: 12px; height: 12px; border: 1.5px solid var(--ink); margin-right: 6px; vertical-align: -1px; }
+  .card .foot { margin: 12px 0 0; border-top: 1px dashed var(--line); padding-top: 8px; font-size: 11px; color: var(--muted); }
+  .printbtn { margin-top: 10px; width: 100%; min-height: 40px; border: 2px solid var(--ink); background: var(--ink); color: var(--paper); font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+</style>
+
+<div class="wrap">
+  <div class="notice" role="note">
+    <span class="bang" aria-hidden="true">!</span>
+    <p>Design mock — not built yet. Sample household. Click a member, then tap papers to change what they hold and watch the map react.</p>
+  </div>
+
+  <header class="top">
+    <div>
+      <p class="label" style="color:var(--marigold-dark)">Jeevana · Proposed feature</p>
+      <h1>Household Life Map</h1>
+      <span class="rule" aria-hidden="true"></span>
+      <p class="sub">Describe the family once. Jeevana shows each person what they missed, what it is blocking, the one thing to do first, and what is coming in the next two years.</p>
+    </div>
+    <div class="summary" aria-label="Household summary">
+      <div><b id="sumMembers">4</b><span class="label">Members</span></div>
+      <div><b class="red" id="sumBlocked">0</b><span class="label">Blocked stages</span></div>
+      <div><b class="gold" id="sumSoon">0</b><span class="label">Due in 24 months</span></div>
+      <div><b class="red" id="sumDeadline">0</b><span class="label">Deadlines</span></div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <aside class="panel col-left">
+      <div class="panel-hd"><h2>The household</h2><span class="label">1 · Describe</span></div>
+      <div class="panel-bd">
+        <div class="members" id="members" role="tablist" aria-label="Family members"></div>
+        <p class="label" style="margin:16px 0 0" id="docsLabel">Papers this person holds</p>
+        <div class="docs" id="docs"></div>
+        <p class="hint" id="hint"></p>
+      </div>
+    </aside>
+
+    <section class="panel col-mid" aria-labelledby="mapTitle">
+      <div class="panel-hd"><h2 id="mapTitle">Life map</h2><span class="label">2 · See</span></div>
+      <div class="panel-bd">
+        <div class="legend label">
+          <span><i class="dot done"></i>Done</span>
+          <span><i class="dot ready"></i>Ready when it happens</span>
+          <span><i class="dot blocked"></i>Blocked</span>
+          <span><i class="dot upcoming"></i>Coming up</span>
+          <span><i class="dot past"></i>Passed / not yet</span>
+        </div>
+        <ol class="map" id="map" style="margin-top:18px"></ol>
+      </div>
+    </section>
+
+    <aside class="col-right">
+      <div class="first">
+        <div class="panel-hd"><span class="label" style="color:var(--marigold-dark)">3 · Do this first</span><span class="label" id="firstFor"></span></div>
+        <div class="panel-bd" id="first"></div>
+      </div>
+      <div class="panel coming">
+        <div class="panel-hd"><h2 style="font-size:16px">Coming up</h2><span class="label">Next 24 months</span></div>
+        <div class="panel-bd"><ul id="coming"></ul></div>
+      </div>
+      <div class="card" id="card" aria-label="Printable path card"></div>
+      <button class="printbtn" type="button" id="printBtn">Print this card · ఈ కార్డును ప్రింట్ చేయండి</button>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  // All strings below are hardcoded sample content; nothing user-typed is rendered.
+  const DOCS = [
+    { id: "birth", en: "Birth certificate", te: "జనన ధృవీకరణ పత్రం" },
+    { id: "aadhaar", en: "Aadhaar", te: "ఆధార్" },
+    { id: "ration", en: "Name on ration card", te: "రేషన్ కార్డులో పేరు" },
+    { id: "school", en: "School transfer certificate", te: "బదిలీ పత్రం (TC)" },
+    { id: "caste", en: "Caste & income certificate", te: "కుల, ఆదాయ ధృవీకరణ" },
+    { id: "voter", en: "Voter ID", te: "ఓటరు కార్డు" },
+    { id: "bank", en: "Own bank account", te: "సొంత బ్యాంకు ఖాతా" },
+    { id: "nominee", en: "Nominee on bank account", te: "బ్యాంకు ఖాతాలో నామినీ" },
+    { id: "pan", en: "PAN card", te: "PAN కార్డు" },
+    { id: "dl", en: "Driving licence", te: "డ్రైవింగ్ లైసెన్స్" },
+    { id: "marriage", en: "Marriage certificate", te: "వివాహ ధృవీకరణ పత్రం" },
+    { id: "insurance", en: "Health cover (PM-JAY / policy)", te: "ఆరోగ్య బీమా" },
+    { id: "pension", en: "Pension enrolment", te: "పెన్షన్ నమోదు" },
+  ];
+  const STAGES = [
+    { n: 1,  t: "A child is born",       age: 0,    core: ["birth"],    req: [],                              live: true },
+    { n: 2,  t: "Starting school",       age: 5,    core: ["school"],   req: ["birth", "aadhaar"] },
+    { n: 3,  t: "Turning 18",            age: 18,   core: ["voter"],    req: ["birth", "aadhaar"],            live: true },
+    { n: 4,  t: "Higher education",      age: 17,   core: [],           req: ["school", "caste", "aadhaar"] },
+    { n: 5,  t: "The first job",         age: 18,   core: ["pan"],      req: ["aadhaar", "bank"] },
+    { n: 6,  t: "Going abroad",          age: null, core: [],           req: ["birth", "aadhaar", "pan"] },
+    { n: 7,  t: "Getting married",       age: 21,   core: ["marriage"], req: ["birth", "aadhaar"] },
+    { n: 8,  t: "Becoming a parent",     age: null, core: [],           req: ["marriage", "aadhaar", "ration"] },
+    { n: 9,  t: "Buying a vehicle",      age: null, core: [],           req: ["dl", "aadhaar", "pan"] },
+    { n: 10, t: "Buying property",       age: null, core: [],           req: ["aadhaar", "pan", "bank"] },
+    { n: 11, t: "Moving city or state",  age: null, core: [],           req: ["aadhaar", "voter", "ration"] },
+    { n: 12, t: "Starting a business",   age: null, core: [],           req: ["pan", "bank", "aadhaar"] },
+    { n: 13, t: "Illness or disability", age: null, core: [],           req: ["aadhaar", "ration", "insurance"] },
+    { n: 14, t: "Losing a job",          age: null, core: [],           req: ["bank", "pan"] },
+    { n: 15, t: "Retirement",            age: 60,   core: ["pension"],  req: ["aadhaar", "bank", "nominee"] },
+    { n: 16, t: "A death in the family", age: null, core: [],           req: ["nominee", "ration", "aadhaar"], live: true },
+  ];
+  const FIX = {
+    birth:    { en: "Register the birth", te: "జననాన్ని నమోదు చేయండి", where: "Municipality / Panchayat office", carry: "Hospital record, parent's Aadhaar", late: { en: "Late Registration of Birth", te: "ఆలస్య జనన నమోదు", where: "Grama / Ward Sachivalayam or MeeSeva", carry: "Aadhaar, ration card, school record or age proof" }, src: "crsorgi.gov.in" },
+    aadhaar:  { en: "Aadhaar enrolment", te: "ఆధార్ నమోదు", where: "Nearest Aadhaar enrolment centre", carry: "Birth certificate, parent's Aadhaar", src: "uidai.gov.in" },
+    ration:   { en: "Add name to ration card", te: "రేషన్ కార్డులో పేరు చేర్చండి", where: "MeeSeva / Sachivalayam", carry: "Birth certificate, Aadhaar", src: "ap.meeseva.gov.in" },
+    school:   { en: "Collect school transfer certificate", te: "బదిలీ పత్రం తీసుకోండి", where: "Last school attended", carry: "Aadhaar", src: "" },
+    caste:    { en: "Caste & income certificate", te: "కుల, ఆదాయ ధృవీకరణ పత్రం", where: "MeeSeva (Tahsildar issues it)", carry: "Aadhaar, ration card, school record", src: "ap.meeseva.gov.in" },
+    voter:    { en: "Enrol as a voter (Form 6)", te: "ఓటరుగా నమోదు (ఫారం 6)", where: "voters.eci.gov.in or the ward BLO", carry: "Address proof, age proof", src: "voters.eci.gov.in" },
+    bank:     { en: "Open or convert a bank account", te: "బ్యాంకు ఖాతా తెరవండి", where: "Any bank branch", carry: "Aadhaar, PAN or Form 60, photo", src: "" },
+    nominee:  { en: "Register a nominee", te: "నామినీని నమోదు చేయండి", where: "Your bank branch, ask for the nomination form", carry: "Passbook, nominee's Aadhaar", src: "" },
+    pan:      { en: "Apply for PAN", te: "PAN కోసం దరఖాస్తు", where: "Online or a PAN service centre", carry: "Aadhaar, photo", src: "incometax.gov.in" },
+    dl:       { en: "Learner's licence", te: "లెర్నర్ లైసెన్స్", where: "AP Transport / Parivahan Sarathi", carry: "Aadhaar, age proof", src: "parivahan.gov.in" },
+    marriage: { en: "Register the marriage", te: "వివాహ నమోదు", where: "Sub-Registrar office", carry: "Age proof of both, witnesses, photos", src: "" },
+    insurance:{ en: "Get health cover", te: "ఆరోగ్య బీమా పొందండి", where: "PM-JAY desk at a hospital or MeeSeva", carry: "Aadhaar, ration card", src: "pmjay.gov.in" },
+    pension:  { en: "Enrol for pension", te: "పెన్షన్ నమోదు", where: "Grama / Ward Sachivalayam", carry: "Aadhaar, bank passbook, age proof", src: "" },
+  };
+  const HOUSE = [
+    { id: "tata", name: "Venkata Rao", role: "Grandfather", age: 68, initial: "V", docs: { birth: "no", aadhaar: "have", ration: "have", voter: "have", bank: "have", nominee: "no", pan: "unsure", insurance: "have" } },
+    { id: "amma", name: "Lakshmi", role: "Mother", age: 34, initial: "L", docs: { birth: "have", aadhaar: "have", ration: "have", school: "have", voter: "have", bank: "have", nominee: "no", pan: "have", marriage: "have", insurance: "no" } },
+    { id: "sravani", name: "Sravani", role: "Daughter", age: 17.25, initial: "S", docs: { birth: "have", aadhaar: "have", ration: "have", school: "have", caste: "no" } },
+    { id: "baby", name: "Baby boy", role: "Born 12 days ago", age: 0.03, daysOld: 12, initial: "B", docs: {} },
+  ];
+
+  let selected = "sravani";
+  let justToggled = false;
+  const has = (m, d) => m.docs[d] === "have";
+  const missing = (m, d) => !has(m, d);
+  const docName = (d) => DOCS.find((x) => x.id === d).en.toLowerCase();
+
+  function stageStatus(m, s) {
+    if (s.core.length && s.core.every((d) => has(m, d))) return { s: "done" };
+    if (s.n === 1 && missing(m, "birth")) {
+      return { s: "blocked", miss: ["birth"], why: m.daysOld != null ? "Not registered · " + Math.max(0, 21 - m.daysOld) + " days left free" : "Birth never registered · late registration is possible" };
+    }
+    if (s.age != null && m.age < s.age) {
+      const months = Math.round((s.age - m.age) * 12);
+      return months <= 24 ? { s: "upcoming", months, why: "In " + months + " months" } : { s: "future", why: "At " + s.age };
+    }
+    if (s.age != null && s.core.length && m.age > s.age + 12) return { s: "past", why: "Passed" };
+    const miss = s.req.filter((d) => missing(m, d));
+    if (miss.length) return { s: "blocked", miss, why: "Needs " + miss.map(docName).join(", ") };
+    return { s: "ready", why: s.age != null && s.core.length ? "Open now" : "Papers in place" };
+  }
+
+  function analyse(m) {
+    const rows = STAGES.map((s) => ({ s, st: stageStatus(m, s) }));
+    const score = {};
+    rows.forEach(({ s, st }) => {
+      if (st.s !== "blocked") return;
+      st.miss.forEach((d) => { score[d] = score[d] || { count: 0, stages: [] }; score[d].count += 1; score[d].stages.push(s.t); });
+    });
+    let first = Object.entries(score).sort((a, b) => b[1].count - a[1].count)[0] || null;
+    if (m.daysOld != null && missing(m, "birth")) first = ["birth", score.birth];
+    return { rows, first, upcoming: rows.filter((r) => r.st.s === "upcoming"), blocked: rows.filter((r) => r.st.s === "blocked").length };
+  }
+
+  // Small DOM helpers; all text goes through textContent.
+  function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function add(parent, ...kids) { kids.forEach((k) => parent.appendChild(k)); return parent; }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+  function render() {
+    const m = HOUSE.find((x) => x.id === selected);
+    const a = analyse(m);
+
+    let blocked = 0, soon = 0, deadlines = 0;
+    HOUSE.forEach((h) => { const r = analyse(h); blocked += r.blocked; soon += r.upcoming.length; if (h.daysOld != null && missing(h, "birth")) deadlines += 1; });
+    document.getElementById("sumMembers").textContent = HOUSE.length;
+    document.getElementById("sumBlocked").textContent = blocked;
+    document.getElementById("sumSoon").textContent = soon;
+    document.getElementById("sumDeadline").textContent = deadlines;
+
+    // Members
+    const ml = clear(document.getElementById("members"));
+    HOUSE.forEach((h) => {
+      const r = analyse(h);
+      const b = el("button", "member" + (h.id === selected ? " active" : ""));
+      b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(h.id === selected));
+      const who = el("span");
+      add(who, el("span", "name", h.name), el("br"), el("span", "age", h.role + (h.daysOld == null ? " · " + Math.floor(h.age) : "")));
+      let flag;
+      if (h.daysOld != null && missing(h, "birth")) flag = el("span", "flag red", Math.max(0, 21 - h.daysOld) + " days");
+      else if (r.blocked) flag = el("span", "flag red", r.blocked + " blocked");
+      else if (r.upcoming.length) flag = el("span", "flag gold", "soon");
+      else flag = el("span", "flag green", "clear");
+      add(b, el("span", "avatar", h.initial), who, flag);
+      b.onclick = () => { selected = h.id; justToggled = false; render(); };
+      ml.appendChild(b);
+    });
+
+    // Docs
+    document.getElementById("docsLabel").textContent = "Papers " + m.name + " holds";
+    const dl = clear(document.getElementById("docs"));
+    DOCS.forEach((d) => {
+      if (m.daysOld != null && !["birth", "aadhaar", "ration", "insurance"].includes(d.id)) return;
+      if (m.age < 16 && ["voter", "bank", "nominee", "pan", "dl", "marriage", "pension"].includes(d.id)) return;
+      const state = m.docs[d.id] || "no";
+      const b = el("button", "doc"); b.type = "button"; b.dataset.state = state; b.setAttribute("aria-pressed", String(state === "have"));
+      const t = el("span", "t", d.en); t.appendChild(el("span", "te", d.te));
+      add(b, el("span", "box", state === "have" ? "✓" : state === "unsure" ? "?" : ""), t, el("span", "st", state === "have" ? "have" : state === "unsure" ? "not sure" : "missing"));
+      b.onclick = () => { m.docs[d.id] = state === "have" ? "no" : state === "no" ? "unsure" : "have"; justToggled = true; render(); };
+      dl.appendChild(b);
+    });
+    const hint = clear(document.getElementById("hint"));
+    const hints = {
+      sravani: ["Try the pitch moment: ", "tap Birth certificate to remove it and watch Sravani's map turn red down the line."],
+      tata: ["Notice: ", "for a 68-year-old the missing birth certificate matters less than the missing nominee. Jeevana ranks by what it unblocks, not by what came first."],
+      baby: ["Deadline: ", "free registration ends 21 days after birth. Jeevana counts it down and puts it first."],
+      amma: ["", "Tap any paper to change it. \"Not sure\" is treated as missing, on purpose."],
+    };
+    add(hint, el("b", null, hints[selected][0]), document.createTextNode(hints[selected][1]));
+
+    // Map
+    document.getElementById("mapTitle").textContent = m.name + "'s life map";
+    const map = clear(document.getElementById("map"));
+    a.rows.forEach(({ s, st }, i) => {
+      const li = el("li", "stop" + (i === 7 ? " col-end" : "")); li.dataset.s = st.s;
+      const node = el("span", "node" + (justToggled ? " pulse" : ""), String(s.n)); node.setAttribute("aria-hidden", "true");
+      const title = el("div", "title", s.t + " ");
+      if (s.live) { const o = el("span", "label", "open"); o.style.color = "var(--leaf)"; title.appendChild(o); }
+      add(li, node, title);
+      if (st.why) {
+        const why = el("p", "why");
+        const lead = st.s === "blocked" ? "Blocked. " : st.s === "upcoming" ? "Coming up. " : "";
+        if (lead) why.appendChild(el("b", null, lead));
+        why.appendChild(document.createTextNode(st.why));
+        li.appendChild(why);
+      }
+      map.appendChild(li);
+    });
+
+    // Do this first
+    document.getElementById("firstFor").textContent = "For " + m.name;
+    const f = clear(document.getElementById("first"));
+    if (!a.first) {
+      add(f, el("h3", null, "Nothing is blocked."), el("p", null, "Every paper this person needs is in place. Keep them together in one folder."));
+    } else {
+      const [docId, info] = a.first;
+      let fix = FIX[docId];
+      if (docId === "birth" && m.age >= 1) fix = Object.assign({}, fix, fix.late);
+      const h3 = el("h3", null, fix.en); h3.appendChild(el("span", "te", fix.te));
+      const p = el("p", null, "Unblocks "); p.appendChild(el("b", null, String(info.count))); p.appendChild(document.createTextNode(" " + (info.count === 1 ? "stage" : "stages") + " of life, more than any other single paper."));
+      const kv = el("dl", "kv");
+      add(kv, el("dt", null, "Where"), el("dd", null, fix.where), el("dt", null, "Carry"), el("dd", null, fix.carry));
+      if (fix.src) { const dd = el("dd", "mono", fix.src + " · 28 Aug 2026"); dd.style.fontSize = "12px"; add(kv, el("dt", null, "Verified"), dd); }
+      const ub = el("div", "unblocks"); info.stages.forEach((t) => ub.appendChild(el("span", null, t)));
+      add(f, h3, p, kv, ub);
+    }
+
+    // Coming up
+    const c = clear(document.getElementById("coming"));
+    const items = [];
+    if (m.daysOld != null && missing(m, "birth")) items.push({ when: String(Math.max(0, 21 - m.daysOld)), unit: "days", red: true, b: "Free birth registration ends", t: "After 21 days a late fee and extra paperwork apply." });
+    a.upcoming.forEach(({ s, st }) => {
+      const prep = s.n === 3 ? "Start now: Aadhaar biometric update, then voter Form 6 on the 18th birthday."
+        : s.n === 15 ? "Start now: confirm nominee, gather age proof, ask the Sachivalayam about pension enrolment."
+        : s.n === 4 ? "Start now: caste & income certificate, transfer certificate from school."
+        : "Gather the papers listed for this stage.";
+      items.push({ when: String(st.months), unit: "months", b: s.t, t: prep });
+    });
+    if (!items.length) items.push({ when: "—", unit: "", b: "Nothing due in the next two years", t: "Jeevana will flag the next stage as it approaches." });
+    items.forEach((it) => {
+      const li = el("li");
+      const when = el("div", "when" + (it.red ? " red" : ""), it.when); when.appendChild(el("small", null, it.unit));
+      const what = el("div", "what"); add(what, el("b", null, it.b), document.createTextNode(it.t));
+      add(li, when, what); c.appendChild(li);
+    });
+
+    // Card
+    const card = clear(document.getElementById("card"));
+    const steps = [];
+    if (a.first) { let fx = FIX[a.first[0]]; if (a.first[0] === "birth" && m.age >= 1) fx = Object.assign({}, fx, fx.late); steps.push(fx); }
+    a.rows.filter((r) => r.st.s === "blocked").forEach((r) => r.st.miss.forEach((d) => { const fx = FIX[d]; if (!steps.some((s) => s.en === fx.en) && steps.length < 4) steps.push(fx); }));
+    const brand = el("div", "brand"); add(brand, el("span", "j", "J"), el("span", "label", "Path card · మార్గ కార్డు"));
+    const sub = el("p", "label", m.role + " · In this order"); sub.style.margin = "2px 0 0";
+    add(card, brand, el("h3", null, m.name), sub);
+    if (steps.length) {
+      const ol = el("ol");
+      steps.forEach((s) => {
+        const li = el("li"); const tick = el("span", "tick"); tick.setAttribute("aria-hidden", "true");
+        add(li, tick, el("b", null, s.en), document.createTextNode(" · " + s.te), el("small", null, s.where + " · Carry: " + s.carry));
+        ol.appendChild(li);
+      });
+      card.appendChild(ol);
+    } else {
+      const p = el("p", null, "All papers in place. Keep them in one folder."); p.style.marginTop = "10px"; card.appendChild(p);
+    }
+    card.appendChild(el("p", "foot", "Independent guide, not a government service. Confirm at the office. · ప్రభుత్వ సేవ కాదు, కార్యాలయంలో నిర్ధారించుకోండి."));
+  }
+
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+  render();
+})();
+</script>
