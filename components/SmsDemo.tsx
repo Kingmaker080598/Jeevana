@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { Journey, Step } from "@/lib/journey/types";
 
 /**
@@ -189,9 +189,10 @@ function buildCompletion(script: JourneyScript): string {
 
 interface SmsDemoProps {
   journeys: readonly Journey[];
+  verifiedPreview?: ReactNode;
 }
 
-export function SmsDemo({ journeys }: Readonly<SmsDemoProps>) {
+export function SmsDemo({ journeys, verifiedPreview }: Readonly<SmsDemoProps>) {
   const [activeId, setActiveId] = useState<ScriptJourneyId>("birth");
   const [messages, setMessages] = useState<Message[]>([]);
   const [completedSteps, setCompletedSteps] = useState(0);
@@ -306,6 +307,16 @@ export function SmsDemo({ journeys }: Readonly<SmsDemoProps>) {
           {CONCEPT_NOTICE}
         </p>
       </div>
+
+      {verifiedPreview ? (
+        <section className="mt-10 border-b border-[var(--line)] pb-12" aria-labelledby="real-phone-heading">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--marigold-dark)]">Verified sender concept</p>
+            <h2 id="real-phone-heading" className="mt-2 font-serif text-3xl font-bold sm:text-4xl">What it looks like on a real phone</h2>
+          </div>
+          <div className="mx-auto mt-7 max-w-sm">{verifiedPreview}</div>
+        </section>
+      ) : null}
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-start">
         {/* ——— Left: explanation and journey selector ——— */}

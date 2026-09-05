@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SmsDemo } from "@/components/SmsDemo";
+import { VerifiedSmsMock } from "@/components/VerifiedSmsMock";
 import { loadJourneys } from "@/lib/journey/loadJourneys";
 
 export const metadata: Metadata = {
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function SmsDemoPage() {
-  return <SmsDemo journeys={loadJourneys()} />;
+  return <SmsDemo journeys={loadJourneys()} verifiedPreview={<VerifiedSmsMock />} />;
 }
