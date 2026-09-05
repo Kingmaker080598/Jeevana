@@ -19,6 +19,23 @@ const STATUS_LABELS = {
   past: "Passed",
 } as const;
 
+const STATUS_LABELS_TE = {
+  done: "పూర్తి",
+  ready: "సిద్ధం",
+  blocked: "ఆగింది",
+  upcoming: "త్వరలో",
+  future: "ఇంకా సమయం ఉంది",
+  past: "దాటిపోయింది",
+} as const;
+
+const STAGE_TITLES_TE: Record<string, string> = {
+  birth: "బిడ్డ పుట్టడం", "school-entry": "పాఠశాల ప్రారంభం", "turning-18": "18 సంవత్సరాలు నిండడం",
+  "higher-education": "ఉన్నత విద్య", "first-job": "మొదటి ఉద్యోగం", "going-abroad": "విదేశాలకు వెళ్లడం",
+  marriage: "వివాహం", "becoming-a-parent": "తల్లిదండ్రులు కావడం", "buying-a-vehicle": "వాహనం కొనడం",
+  "buying-property": "ఆస్తి కొనడం", moving: "నగరం లేదా రాష్ట్రం మారడం", "starting-a-business": "వ్యాపారం ప్రారంభం",
+  "illness-disability": "అనారోగ్యం లేదా వైకల్యం", "losing-a-job": "ఉద్యోగం కోల్పోవడం", retirement: "పదవీ విరమణ", death: "కుటుంబంలో మరణం",
+};
+
 const STATUS_STYLES = {
   done: "bg-[var(--leaf)] text-white border-[var(--leaf)]",
   ready: "bg-white text-[var(--leaf)] border-[var(--leaf)]",
@@ -51,12 +68,21 @@ function documentApplies(documentId: string, age: number): boolean {
   return true;
 }
 
-function visibleReason(row: LifeMapRow): string {
+function visibleReason(row: LifeMapRow, language: "en" | "te"): string {
+  if (language === "te") {
+    if (row.status === "done") return "పూర్తైంది";
+    if (row.status === "blocked") return `ఆగింది. కావాల్సినవి: ${row.missing.map((id) => DOCUMENT_BY_ID.get(id)?.label_te ?? id).join(", ")}`;
+    if (row.status === "upcoming") return `${row.monthsUntil} నెలల్లో`;
+    if (row.status === "future") return "ఇంకా సమయం ఉంది";
+    if (row.status === "past") return "ఈ దశ దాటిపోయింది";
+    return "పత్రాలు సిద్ధంగా ఉన్నాయి";
+  }
   const lead = row.status === "blocked" ? "Blocked. " : row.status === "upcoming" ? "Coming up. " : "";
   return `${lead}${row.reason}`;
 }
 
 function LifeMapStops({ member, today }: Readonly<{ member: Member; today: Date }>) {
+  const { language } = useLanguage();
   const analysis = analyseMember(member, today);
   const renderRow = (row: LifeMapRow, isLast: boolean) => (
     <li key={row.stage.id} className="relative min-h-20 pb-5 pl-11">
@@ -64,22 +90,22 @@ function LifeMapStops({ member, today }: Readonly<{ member: Member; today: Date 
       {!isLast ? <span aria-hidden="true" className="absolute bottom-1 left-4 top-9 border-l-2 border-dotted border-[var(--line)]" /> : null}
       <div className="flex flex-wrap items-baseline gap-2">
         {row.stage.status === "live" ? (
-          <Link href={`/journey/${row.stage.journeyId}`} className="font-serif font-bold underline decoration-[var(--marigold)] decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-[var(--marigold)]">{row.stage.title}</Link>
-        ) : <h3 className={`font-serif font-bold ${row.status === "past" || row.status === "future" ? "text-[var(--muted)]" : ""}`}>{row.stage.title}</h3>}
-        <span className="font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">{STATUS_LABELS[row.status]}</span>
+          <Link href={`/journey/${row.stage.journeyId}`} className="font-serif font-bold underline decoration-[var(--marigold)] decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-[var(--marigold)]">{language === "te" ? STAGE_TITLES_TE[row.stage.id] : row.stage.title}</Link>
+        ) : <h3 className={`font-serif font-bold ${row.status === "past" || row.status === "future" ? "text-[var(--muted)]" : ""}`}>{language === "te" ? STAGE_TITLES_TE[row.stage.id] : row.stage.title}</h3>}
+        <span className="font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">{language === "te" ? STATUS_LABELS_TE[row.status] : STATUS_LABELS[row.status]}</span>
       </div>
-      <p className={`mt-1 text-xs leading-5 ${row.status === "blocked" ? "text-[var(--brick)]" : row.status === "upcoming" ? "text-[var(--marigold-dark)]" : "text-[var(--muted)]"}`}>{visibleReason(row)}</p>
+      <p className={`mt-1 text-xs leading-5 ${row.status === "blocked" ? "text-[var(--brick)]" : row.status === "upcoming" ? "text-[var(--marigold-dark)]" : "text-[var(--muted)]"}`}>{visibleReason(row, language)}</p>
     </li>
   );
   return (
     <section aria-label={`${member.name}'s life map`} className="min-w-0 border border-[var(--line)] bg-white p-4 sm:p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-[var(--ink)] pb-2">
-        <h2 className="font-serif text-2xl font-bold">{member.name}&apos;s life map</h2>
+        <h2 className="font-serif text-2xl font-bold">{language === "te" ? `${member.name} జీవన పటం` : `${member.name}'s life map`}</h2>
         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">2 · See</span>
       </div>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
         {(["done", "ready", "blocked", "upcoming", "future"] as const).map((status) => (
-          <span key={status} className="flex items-center gap-1.5"><span className={`h-3 w-3 rounded-full border-2 ${STATUS_STYLES[status]}`} />{status === "future" ? "Passed / not yet" : STATUS_LABELS[status]}</span>
+          <span key={status} className="flex items-center gap-1.5"><span className={`h-3 w-3 rounded-full border-2 ${STATUS_STYLES[status]}`} />{language === "te" ? STATUS_LABELS_TE[status] : status === "future" ? "Passed / not yet" : STATUS_LABELS[status]}</span>
         ))}
       </div>
       <div className="mt-6 grid gap-x-8 md:grid-cols-2">
@@ -141,8 +167,9 @@ function PathCard({ member, today }: Readonly<{ member: Member; today: Date }>) 
 }
 
 function SidePanel({ member, today }: Readonly<{ member: Member; today: Date }>) {
+  const { language } = useLanguage();
   const analysis = analyseMember(member, today);
-  return <aside className="min-w-0 space-y-5"><FirstActionCard action={analysis.doFirst} /><section className="border border-[var(--line)] bg-white p-4"><div className="flex items-baseline justify-between border-b border-[var(--line)] pb-2"><h2 className="font-serif text-xl font-bold">Coming up</h2><span className="font-mono text-[8px] uppercase tracking-wider text-[var(--muted)]">Next 24 months</span></div><ul className="divide-y divide-[var(--line)]">{analysis.upcoming.length ? analysis.upcoming.map((item) => <li key={`${item.kind}-${item.stageId}`} className="grid grid-cols-[3.25rem_1fr] gap-3 py-3"><div className={`font-serif text-2xl font-bold ${item.kind === "deadline" ? "text-[var(--brick)]" : "text-[var(--marigold-dark)]"}`}>{item.kind === "deadline" ? item.daysUntil : item.monthsUntil}<small className="block font-mono text-[7px] uppercase tracking-wider">{item.kind === "deadline" ? "days" : "months"}</small></div><div className="text-xs leading-5"><strong className="block font-serif text-sm">{item.label}</strong>{item.prepNow}</div></li>) : <li className="py-4 text-sm text-[var(--muted)]">Nothing due in the next two years.</li>}</ul></section><PathCard member={member} today={today} /><button type="button" onClick={() => window.print()} className="print-button min-h-11 w-full bg-[var(--ink)] px-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-[4px_4px_0_var(--marigold)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">Print this card · ఈ కార్డును ప్రింట్ చేయండి</button></aside>;
+  return <aside className="min-w-0 space-y-5"><FirstActionCard action={analysis.doFirst} /><section className="border border-[var(--line)] bg-white p-4"><div className="flex items-baseline justify-between border-b border-[var(--line)] pb-2"><h2 className="font-serif text-xl font-bold">{language === "te" ? "త్వరలో" : "Coming up"}</h2><span className="font-mono text-[8px] uppercase tracking-wider text-[var(--muted)]">{language === "te" ? "రాబోయే 24 నెలలు" : "Next 24 months"}</span></div><ul className="divide-y divide-[var(--line)]">{analysis.upcoming.length ? analysis.upcoming.map((item) => <li key={`${item.kind}-${item.stageId}`} className="grid grid-cols-[3.25rem_1fr] gap-3 py-3"><div className={`font-serif text-2xl font-bold ${item.kind === "deadline" ? "text-[var(--brick)]" : "text-[var(--marigold-dark)]"}`}>{item.kind === "deadline" ? item.daysUntil : item.monthsUntil}<small className="block font-mono text-[7px] uppercase tracking-wider">{language === "te" ? (item.kind === "deadline" ? "రోజులు" : "నెలలు") : (item.kind === "deadline" ? "days" : "months")}</small></div><div className="text-xs leading-5"><strong className="block font-serif text-sm">{language === "te" && item.kind === "stage" ? STAGE_TITLES_TE[item.stageId] : item.label}</strong>{language === "te" && item.kind === "stage" ? item.prepNow_te : item.prepNow}</div></li>) : <li className="py-4 text-sm text-[var(--muted)]">{language === "te" ? "రాబోయే రెండేళ్లలో ఏదీ లేదు." : "Nothing due in the next two years."}</li>}</ul></section><PathCard member={member} today={today} /><button type="button" onClick={() => window.print()} className="print-button min-h-11 w-full bg-[var(--ink)] px-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-[4px_4px_0_var(--marigold)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">Print this card · ఈ కార్డును ప్రింట్ చేయండి</button></aside>;
 }
 
 export function LifeMap({ readOnly = false, compact = false, today: todayProp }: Readonly<LifeMapProps>) {
@@ -197,13 +224,13 @@ export function LifeMap({ readOnly = false, compact = false, today: todayProp }:
   };
 
   if (!readOnly && !hydrated) return <div className="min-h-48" aria-label="Loading household" />;
-  if (!readOnly && members.length === 0) return <section className="border border-[var(--line)] bg-white px-6 py-12 text-center"><p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--marigold-dark)]">Start here</p><h2 className="mt-3 font-serif text-3xl font-bold">Map the household once</h2><p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[var(--muted)]">Add each person and tick the papers they hold. Jeevana will show what is blocked, what comes next, and which paper helps most.</p><div className="mt-6 flex flex-wrap justify-center gap-3"><button type="button" onClick={() => setForm(EMPTY_FORM)} className="min-h-11 border-2 border-[var(--ink)] bg-[var(--ink)] px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-white focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">Add a person</button><button type="button" onClick={loadSample} className="min-h-11 border-2 border-[var(--ink)] px-5 font-mono text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">Try a sample family</button></div>{form ? <MemberEditor form={form} setForm={setForm} onSubmit={saveMember} /> : null}</section>;
+  if (!readOnly && members.length === 0) return <section className="border border-[var(--line)] bg-white px-6 py-12 text-center"><p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--marigold-dark)]">{language === "te" ? "ఇక్కడ ప్రారంభించండి" : "Start here"}</p><h2 className="mt-3 font-serif text-3xl font-bold">{language === "te" ? "కుటుంబాన్ని ఒక్కసారి నమోదు చేయండి" : "Map the household once"}</h2><p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[var(--muted)]">{language === "te" ? "ప్రతి వ్యక్తిని చేర్చి, వారి వద్ద ఉన్న పత్రాలను గుర్తించండి. ఏది ఆగింది, తర్వాత ఏముంది, ఏ పత్రం ఎక్కువగా ఉపయోగపడుతుంది అన్నది జీవన చూపిస్తుంది." : "Add each person and tick the papers they hold. Jeevana will show what is blocked, what comes next, and which paper helps most."}</p><div className="mt-6 flex flex-wrap justify-center gap-3"><button type="button" onClick={() => setForm(EMPTY_FORM)} className="min-h-11 border-2 border-[var(--ink)] bg-[var(--ink)] px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-white focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">{language === "te" ? "వ్యక్తిని చేర్చండి" : "Add a person"}</button><button type="button" onClick={loadSample} className="min-h-11 border-2 border-[var(--ink)] px-5 font-mono text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] focus:ring-offset-2">{language === "te" ? "నమూనా కుటుంబాన్ని చూడండి" : "Try a sample family"}</button></div>{form ? <MemberEditor form={form} setForm={setForm} onSubmit={saveMember} /> : null}</section>;
 
   if (!selected) return null;
   if (compact) return <LifeMapStops member={selected} today={today} />;
 
   return <div>
-    <dl className="grid grid-cols-2 divide-x divide-y divide-[var(--line)] border border-[var(--line)] bg-white sm:grid-cols-4 sm:divide-y-0">{[[summary.members, "Members"], [summary.blockedStages, "Blocked stages"], [summary.dueWithin24Months, "Due in 24 months"], [summary.deadlines, "Deadlines"]].map(([value, label]) => <div key={label} className="px-4 py-3"><dd className={`font-serif text-3xl font-bold ${label === "Blocked stages" || label === "Deadlines" ? "text-[var(--brick)]" : ""}`}>{value}</dd><dt className="font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">{label}</dt></div>)}</dl>
+    <dl className="grid grid-cols-2 divide-x divide-y divide-[var(--line)] border border-[var(--line)] bg-white sm:grid-cols-4 sm:divide-y-0">{[[summary.members, language === "te" ? "సభ్యులు" : "Members"], [summary.blockedStages, language === "te" ? "ఆగిన దశలు" : "Blocked stages"], [summary.dueWithin24Months, language === "te" ? "24 నెలల్లో" : "Due in 24 months"], [summary.deadlines, language === "te" ? "గడువులు" : "Deadlines"]].map(([value, label], index) => <div key={label} className="px-4 py-3"><dd className={`font-serif text-3xl font-bold ${index === 1 || index === 3 ? "text-[var(--brick)]" : ""}`}>{value}</dd><dt className="font-mono text-[8px] font-bold uppercase tracking-wider text-[var(--muted)]">{label}</dt></div>)}</dl>
     <div className="mt-5 grid items-start gap-5 xl:grid-cols-[17rem_minmax(0,1fr)_19rem]">
       <aside className="min-w-0 border border-[var(--line)] bg-white p-4"><div className="flex items-baseline justify-between border-b-2 border-[var(--ink)] pb-2"><h2 className="font-serif text-xl font-bold">{language === "te" ? "కుటుంబం" : "The household"}</h2><span className="font-mono text-[8px] uppercase tracking-wider text-[var(--muted)]">1 · Describe</span></div><div role="tablist" aria-label="Family members" className="mt-3 space-y-2">{members.map((member) => { const analysis = analyseMember(member, today); const active = member.id === selected.id; return <button key={member.id} type="button" role="tab" aria-selected={active} onClick={() => setSelectedId(member.id)} className={`flex min-h-14 w-full items-center gap-2 border p-2 text-left focus:outline-none focus:ring-2 focus:ring-[var(--marigold)] ${active ? "border-[var(--ink)] bg-[var(--marigold-soft)]" : "border-[var(--line)]"}`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--leaf)] font-serif font-bold text-white">{member.name.charAt(0).toUpperCase()}</span><span className="min-w-0 flex-1"><strong className="block truncate font-serif">{member.name}</strong><small className="block truncate text-[10px] text-[var(--muted)]">{member.role} · {ageInCompletedYears(member.birthDate, today)}</small></span><span className="font-mono text-[8px] uppercase text-[var(--brick)]">{analysis.counts.blocked} blocked</span></button>; })}</div>
       <div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => setForm(EMPTY_FORM)} className="min-h-9 border border-[var(--ink)] px-3 font-mono text-[9px] font-bold uppercase focus:outline-none focus:ring-2 focus:ring-[var(--marigold)]">Add</button><button type="button" onClick={() => setForm({ id: selected.id, name: selected.name, role: selected.role, birthDate: selected.birthDate, approximateAge: "" })} className="min-h-9 border border-[var(--line)] px-3 font-mono text-[9px] font-bold uppercase focus:outline-none focus:ring-2 focus:ring-[var(--marigold)]">Edit</button><button type="button" onClick={() => { if (window.confirm(`Remove ${selected.name}?`)) { const next = members.filter((member) => member.id !== selected.id); setMembers(next); setSelectedId(next[0]?.id ?? ""); } }} className="min-h-9 border border-[var(--brick)] px-3 font-mono text-[9px] font-bold uppercase text-[var(--brick)] focus:outline-none focus:ring-2 focus:ring-[var(--marigold)]">Remove</button></div>
